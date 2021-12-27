@@ -37,56 +37,21 @@
         <!-- Header-->
         <header class="masthead d-flex align-items-center">
             <div class="container px-4 px-lg-5 text-center">
-                <h1 class="mb-1">Bynn Ark</h1>
-                <h3 class="mb-5"><em>Lost Ark Scheduler</em></h3>
-                <a class="btn btn-primary btn-xl" href="#about">Find Out More</a>
+                <h1 class="mb-1">Lost Ark Scheduler</h1>
+                <div style="margin:30px 0px;"></div>
+                <h2 style="color:white;">Write Your NickName</h2>
+                <input type="text" name="char_name" style="padding: 1.25rem 4.5rem;">
+                <a class="btn btn-dark btn-xl" href="#services" style="margin-top:-5px">Search</a>
             </div>
         </header>
         <!-- About-->
-        <section class="content-section bg-light" id="about">
+        <section class="content-section bg-light" id="about" style="display:none;">
             <div class="container px-4 px-lg-5 text-center">
-                <?php
-                    $qry = "select * from lostark.bynnark where 1=1 and userip = '".$_SERVER["REMOTE_ADDR"]."'";
-                    echo $qry;
-                    $res = @mysqli_query($dbconn, $qry);
-                    $cnt = @mysqli_num_rows($res);
-                    if($cnt > 0) {
-                        $data = json_decode($row["data"], true);
-
-                ?>
-                <div>  
-                    <table> 
-                        <tr>
-                            <td>character</td>
-                            <td>character</td>
-                            <td>character</td>
-                        </tr>
-                    </table>
-                </div>
-                <?php
-                    } else {
-                ?>
-                <div>  
-                    <table> 
-                        <tr>
-                            <td>character</td>
-                            <td>character</td>
-                            <td>character</td>
-                        </tr>
-                    </table>
-                </div>
-                <?php
-                    }
-                ?>
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-lg-10">
-                        <h2>Stylish Portfolio is the perfect theme for your next project!</h2>
-                        <p class="lead mb-5">
-                            This theme features a flexible, UX friendly sidebar menu and stock photos from our friends at
-                            <a href="https://unsplash.com/">Unsplash</a>
-                            !
-                        </p>
-                        <a class="btn btn-dark btn-xl" href="#services">What We Offer</a>
+                        <h2>Write Your NickName</h2>
+                        <input type="text" name="char_name" value="" style="padding: 1.25rem 4.5rem;">
+                        <a class="btn btn-dark btn-xl" href="#services" style="margin-top:-5px">Search</a>
                     </div>
                 </div>
             </div>
@@ -223,6 +188,7 @@
                 <p class="text-muted small mb-0">Copyright &copy; Your Website 2021</p>
             </div>
         </footer>
+        <div id="script" style="display:none"></div>
         <!-- Scroll to Top Button-->
         <a class="scroll-to-top rounded" href="#page-top"><i class="fas fa-angle-up"></i></a>
         <!-- Bootstrap core JS-->
@@ -236,7 +202,7 @@
                     url : "state.php",
                     data : {"mode":"index"},
                     success : function(e) {
-                        alert(e);
+                        $("#script").html(e);
                     }
                 })
             });

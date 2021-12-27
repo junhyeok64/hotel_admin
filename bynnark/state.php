@@ -1,5 +1,19 @@
 <?php
 	include "../config/loa_config.php";
+	/*
+이름
+레벨
+카던
+가디언
+오레하
+아르고스
+발탄
+비아
+발탄하드
+비아하드
+쿠크
+아브렐
+	*/
 	foreach($_POST as $key => $value) {
 		$$key = $value;
 	}
@@ -19,7 +33,11 @@
 					}
 				}
 			}
-			echo $type;
+			if($type == "member") {
+				echo "<script>new_member();</script>";
+			} else {
+				echo "<script>member();</script>";
+			}
 		break;
 		case "member":
 			$out = "";
@@ -30,11 +48,24 @@
 			$data = json_decode($row["data"]);
 			$out .= "<table>";
 			$out .= "<tr>";
+			$prev_level = 0;
+			$main_char = "";
 			for($i=0; $i<count($data["name"]); $i++) {
 				$out .= "<td>".$data["name"][$i]."<td>";
+				if($prev_level < $data["level"][$i]) {
+					$prev_level = $data["level"][$i];
+					$main_char = $data["name"][$i];
+				}
 			}
 			$out .= "</tr>";
 			$out .= "</table>";
+			$out .= "<script>";
+			$out .= "$(\"input[name='char_name']\").val('".$main_char."')";
+			$out .= "</script>";
+		break;
+		case "new":
+			$out = "";
+			$out .= "";
 		break;
 	}
 ?>

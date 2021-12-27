@@ -78,3 +78,9 @@ function fadeIn(el, display) {
         }
     })();
 };
+function new_member() {
+
+}
+function member() {
+    
+}
