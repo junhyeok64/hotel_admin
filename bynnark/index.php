@@ -1,3 +1,6 @@
+<?php
+    include_once "../config/loa_config.php";
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -16,6 +19,7 @@
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
+        <script src="./js/jquery-3.2.1.min.js"></script>
     </head>
     <body id="page-top">
         <!-- Navigation-->
@@ -33,14 +37,47 @@
         <!-- Header-->
         <header class="masthead d-flex align-items-center">
             <div class="container px-4 px-lg-5 text-center">
-                <h1 class="mb-1">Stylish Portfolio</h1>
-                <h3 class="mb-5"><em>A Free Bootstrap Theme by Start Bootstrap</em></h3>
+                <h1 class="mb-1">Bynn Ark</h1>
+                <h3 class="mb-5"><em>Lost Ark Scheduler</em></h3>
                 <a class="btn btn-primary btn-xl" href="#about">Find Out More</a>
             </div>
         </header>
         <!-- About-->
         <section class="content-section bg-light" id="about">
             <div class="container px-4 px-lg-5 text-center">
+                <?php
+                    $qry = "select * from lostark.bynnark where 1=1 and userip = '".$_SERVER["REMOTE_ADDR"]."'";
+                    echo $qry;
+                    $res = @mysqli_query($dbconn, $qry);
+                    $cnt = @mysqli_num_rows($res);
+                    if($cnt > 0) {
+                        $data = json_decode($row["data"], true);
+
+                ?>
+                <div>  
+                    <table> 
+                        <tr>
+                            <td>character</td>
+                            <td>character</td>
+                            <td>character</td>
+                        </tr>
+                    </table>
+                </div>
+                <?php
+                    } else {
+                ?>
+                <div>  
+                    <table> 
+                        <tr>
+                            <td>character</td>
+                            <td>character</td>
+                            <td>character</td>
+                        </tr>
+                    </table>
+                </div>
+                <?php
+                    }
+                ?>
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-lg-10">
                         <h2>Stylish Portfolio is the perfect theme for your next project!</h2>
@@ -192,5 +229,17 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $.ajax({
+                    type : "POST",
+                    url : "state.php",
+                    data : {"mode":"index"},
+                    success : function(e) {
+                        alert(e);
+                    }
+                })
+            });
+        </script>
     </body>
 </html>
