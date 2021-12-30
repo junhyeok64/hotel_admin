@@ -20,6 +20,7 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
         <script src="./js/jquery-3.2.1.min.js"></script>
+        <script src="js/scripts.js"></script>
     </head>
     <body id="page-top">
         <!-- Navigation-->
@@ -35,17 +36,22 @@
             </ul>
         </nav>
         <!-- Header-->
+        <script type="text/javascript">
+            function search_name2() {
+                alert("aa");
+            }
+        </script>
         <header class="masthead d-flex align-items-center">
-            <div class="container px-4 px-lg-5 text-center">
+            <div class="container px-4 px-lg-5 text-center" id="new_member">
                 <h1 class="mb-1">Lost Ark Scheduler</h1>
                 <div style="margin:30px 0px;"></div>
                 <h2 style="color:white;">Write Your NickName</h2>
                 <input type="text" name="char_name" style="padding: 1.25rem 4.5rem;">
-                <a class="btn btn-dark btn-xl" href="#services" style="margin-top:-5px">Search</a>
+                <a class="btn btn-dark btn-xl" href="javascript:search_name();" style="margin-top:-5px">Search</a>
             </div>
         </header>
         <!-- About-->
-        <section class="content-section bg-light" id="about" style="display:none;">
+        <!--<section class="content-section bg-light" id="about" style="display:none;">
             <div class="container px-4 px-lg-5 text-center">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-lg-10">
@@ -55,9 +61,11 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section>-->
         <!-- Services-->
         <section class="content-section bg-primary text-white text-center" id="services">
+            <div class="container px-4 px-lg-5" id="member_info">
+            </div>
             <div class="container px-4 px-lg-5">
                 <div class="content-section-heading">
                     <h3 class="text-secondary mb-0">Services</h3>
@@ -194,7 +202,6 @@
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
         <script type="text/javascript">
             $(document).ready(function(){
                 $.ajax({

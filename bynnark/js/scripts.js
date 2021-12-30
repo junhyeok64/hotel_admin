@@ -79,8 +79,31 @@ function fadeIn(el, display) {
     })();
 };
 function new_member() {
-
+    $("input[name='char_name']").focus();
 }
 function member() {
-    
+    $.ajax({
+        type : "POST",
+        data : {"mode":"member"},
+        url  : "./state.php",
+        success : function(e) {
+            $("#member_info").html(e);
+        }
+    })
+}
+function search_name() {
+    if($("input[name='char_name']").val() == "") {
+        alert("닉네임을 입력해주세요");
+        new_member();
+        return false;
+    } else {
+        $.ajax({
+          type : "POST",
+            data : {"mode":"new", "name":$("input[name='char_name']").val()},
+            url  : "./state.php",
+            success : function(e) {
+                $("#member_info").html(e);
+            }  
+        })
+    }
 }
