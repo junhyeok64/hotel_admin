@@ -21,6 +21,16 @@
         <link href="css/styles.css" rel="stylesheet" />
         <script src="./js/jquery-3.2.1.min.js"></script>
         <script src="js/scripts.js"></script>
+        <style type="text/css">
+            @media screen and (max-width:900px) {
+                .main_img{width:30rem;}
+                .search_button{margin-top:-5px;}
+            }
+            @media screen and (max-width:1200px) {
+                .main_img{width:20rem;}
+                .search_button{margin-top:0;}
+            }
+        </style>
     </head>
     <body id="page-top">
         <!-- Navigation-->
@@ -47,7 +57,7 @@
                 <div style="margin:30px 0px;"></div>
                 <h2 style="color:white;">Write Your NickName</h2>
                 <input type="text" name="char_name" style="padding: 1.25rem 4.5rem;">
-                <a class="btn btn-dark btn-xl" href="javascript:search_name();" style="margin-top:-5px">Search</a>
+                <a class="btn btn-dark btn-xl search_button" href="javascript:search_name();" >Search</a>
             </div>
         </header>
         <!-- About-->
@@ -118,48 +128,22 @@
                     <h2 class="mb-5">Recent Projects</h2>
                 </div>
                 <div class="row gx-0">
-                    <div class="col-lg-6">
+                    <div class="col-lg-6" style="width:100%">
                         <a class="portfolio-item" href="#!">
                             <div class="caption">
                                 <div class="caption-content">
-                                    <div class="h2">Stationary</div>
-                                    <p class="mb-0">A yellow pencil with envelopes on a clean, blue backdrop!</p>
+                                    <div class="h2 class_img"></div>
+                                    <div class="h2">
+                                        <img class="main_img" src="">
+                                    </div>
+                                </div>
+                                <div class="caption-content" style="margin-left:-10rem;">
+                                    <div class="h2 class_name"></div>
+                                    <p class="mb-0 user_level"></p>
+                                    <p class="mb-0 user_name"></p>
                                 </div>
                             </div>
-                            <img class="img-fluid" src="assets/img/portfolio-1.jpg" alt="..." />
-                        </a>
-                    </div>
-                    <div class="col-lg-6">
-                        <a class="portfolio-item" href="#!">
-                            <div class="caption">
-                                <div class="caption-content">
-                                    <div class="h2">Ice Cream</div>
-                                    <p class="mb-0">A dark blue background with a colored pencil, a clip, and a tiny ice cream cone!</p>
-                                </div>
-                            </div>
-                            <img class="img-fluid" src="assets/img/portfolio-2.jpg" alt="..." />
-                        </a>
-                    </div>
-                    <div class="col-lg-6">
-                        <a class="portfolio-item" href="#!">
-                            <div class="caption">
-                                <div class="caption-content">
-                                    <div class="h2">Strawberries</div>
-                                    <p class="mb-0">Strawberries are such a tasty snack, especially with a little sugar on top!</p>
-                                </div>
-                            </div>
-                            <img class="img-fluid" src="assets/img/portfolio-3.jpg" alt="..." />
-                        </a>
-                    </div>
-                    <div class="col-lg-6">
-                        <a class="portfolio-item" href="#!">
-                            <div class="caption">
-                                <div class="caption-content">
-                                    <div class="h2">Workspace</div>
-                                    <p class="mb-0">A yellow workspace with some scissors, pencils, and other objects.</p>
-                                </div>
-                            </div>
-                            <img class="img-fluid" src="assets/img/portfolio-4.jpg" alt="..." />
+                            <img class="img-fluid" src="https://cdn-lostark.game.onstove.com/2018/obt/assets/images/pc/bg/bg_profile_equipment.png" alt="..." />
                         </a>
                     </div>
                 </div>
