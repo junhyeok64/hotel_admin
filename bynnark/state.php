@@ -104,9 +104,10 @@
 			$class_name = str_replace("\"", "", $_class[1]);
 			$class_img = str_replace("src=", "", $_class[0]);
 			$class_img = str_replace("\"", "", $class_img);
-			$class_img = str_replace(" ", "", $class_img);
-			$class_img = "<img src=\"".$class_img."\">";
+			$_class_img = str_replace(" ", "", $class_img);
+			$class_img = "<img src=\"".$_class_img."\">";
 			$user_name = $name;
+			
 
 			//조회한 캐릭터가 이미 저장되어있는지 조회
 			$type = "null";
@@ -125,7 +126,24 @@
 			$script_arr[] = "user_level";
 			$script_arr[] = "main_img";
 
+			//조회값이 아애 없을때
 			$out = "";
+			if($_class_img == "" && $main_img == "") {
+				$out .= "<script type=\"text/javascript\">";
+				$out .= "alert(\"캐릭터 정보를 불러 올 수 없습니다.\\n올바른 닉네임이 아니거나\\n서버가 정검중일 수 있습니다.\");";
+				for($a=0; $a<count($script_arr); $a++) {
+					if($script_arr[$a] == "main_img") {
+						$out .= "$(\".".$script_arr[$a]."\").attr('src', '');";
+					} else {
+						$out .= "$(\".".$script_arr[$a]."\").html('');";
+					}
+				}
+				$out .= "</script>";
+				echo $out;
+				exit;
+			}
+
+
 			//지정할 캐릭터가 맞는지, 해당 원정대의 다른 캐릭터들도 데려올건지 확인
 			if($type == "null") {
 				//캐릭 없을시 
@@ -137,6 +155,9 @@
 						$out .= "$(\".".$script_arr[$a]."\").html('".${$script_arr[$a]}."');";
 					}
 				}
+				$out .= "$('html, body').animate({
+                    scrollTop: $(\"#portfolio\").offset().top
+                }, 500);";
 				$out .= "</script>";
 				echo $out;
 			} else {

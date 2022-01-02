@@ -56,7 +56,7 @@
                 <h1 class="mb-1">Lost Ark Scheduler</h1>
                 <div style="margin:30px 0px;"></div>
                 <h2 style="color:white;">Write Your NickName</h2>
-                <input type="text" name="char_name" style="padding: 1.25rem 4.5rem;">
+                <input type="text" name="char_name" onkeypress="if (window.event.keyCode == 13) {search_name();}" style="padding: 1.25rem 4.5rem;">
                 <a class="btn btn-dark btn-xl search_button" href="javascript:search_name();" >Search</a>
             </div>
         </header>
