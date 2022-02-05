@@ -22,10 +22,23 @@
 			echo $out;
 		break;
 		case "logout":
-			$util->admin_logut();
+			$util->admin_logout();
 			$out = "<script type=\"text/javascript\">";
-			$out .= "location.hef='".base_admin."';";
+			$out .= "location.href='".base_admin."';";
 			$out .= "</script>";
+			echo $out;
+		break;
+		case "todo_add":
+			$text = addslashes($text);
+			$in_qry = "insert into todo (`text`, `check`, `state`) values ";
+			$in_qry .= "('".$text."', 'N', 'Y')";
+			$in_res = mysqli_query($dbconn, $in_qry);
+			if($in_res) {
+				$in_num = @mysqli_insert_id($dbconn);
+				echo "SUCC||".$in_num;
+			} else {
+				echo "FAIL||";
+			}
 		break;
 	}
 ?>

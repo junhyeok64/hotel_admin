@@ -1,3 +1,6 @@
+    <script type="text/javascript">
+      var page = "main";
+    </script>
     <div class="container-scroller">
       <!-- partial:partials/_sidebar.html -->
       <?php
@@ -305,11 +308,11 @@
                                 break;
                                 case "S":
                                   $show_state = "예약확정";
-                                  $css_state = "badge-outline-success";
+                                  $css_state = " badge-outline-info";
                                 break;
                                 case "E":
                                   $show_state = "투숙완료";
-                                  $css_state = "badge-outline-success";
+                                  $css_state = " badge-outline-info";
                                 break;
                                 case "C":
                                   $show_state = "예약취소";
@@ -321,7 +324,7 @@
                                 break;
                                 default:
                                   $show_state = "확인요망";
-                                  $css_state = " badge-outline-warning";
+                                  $css_state = " badge-outline-secondary";
                                 break;
                               }
                           ?>
@@ -470,46 +473,29 @@
                   <div class="card-body">
                     <h4 class="card-title">To do list</h4>
                     <div class="add-items d-flex">
-                      <input type="text" class="form-control todo-list-input" placeholder="enter task..">
-                      <button class="add btn btn-primary todo-list-add-btn">Add</button>
+                      <form name="todo_list" style="display:contents;" onSubmit="return false;">
+                      <input type="text" name="password" class="form-control todo-list-input" placeholder="enter task..">
+                      <button type="button" class="add btn btn-primary todo-list-add-btn">Add</button>
+                      </form>
                     </div>
                     <div class="list-wrapper">
-                      <ul class="d-flex flex-column-reverse text-white todo-list todo-list-custom">
+                      <ul class="d-flex flex-column text-white todo-list todo-list-custom">
+                        <?php
+                          $todo_qry = "select * from todo where state = 'Y' order by num desc limit 0,10";
+                          $todo_res = mysqli_query($dbconn, $todo_qry);
+                          while($todo_row = @mysqli_fetch_array($todo_res)) {
+                            $checked = ($todo_row["check"] == "N") ? "" : " checked";
+                        ?>
                         <li>
                           <div class="form-check form-check-primary">
                             <label class="form-check-label">
-                              <input class="checkbox" type="checkbox"> Create invoice </label>
+                              <input name="num[]" value="<?=$todo_row['num']?>" class="checkbox" type="checkbox"<?=$checked?>> <?=$todo_row["text"]?> </label>
                           </div>
-                          <i class="remove mdi mdi-close-box"></i>
+                          <i class="remove mdi mdi-close-box" onclick=""></i>
                         </li>
-                        <li>
-                          <div class="form-check form-check-primary">
-                            <label class="form-check-label">
-                              <input class="checkbox" type="checkbox"> Meeting with Alita </label>
-                          </div>
-                          <i class="remove mdi mdi-close-box"></i>
-                        </li>
-                        <li class="completed">
-                          <div class="form-check form-check-primary">
-                            <label class="form-check-label">
-                              <input class="checkbox" type="checkbox" checked> Prepare for presentation </label>
-                          </div>
-                          <i class="remove mdi mdi-close-box"></i>
-                        </li>
-                        <li>
-                          <div class="form-check form-check-primary">
-                            <label class="form-check-label">
-                              <input class="checkbox" type="checkbox"> Plan weekend outing </label>
-                          </div>
-                          <i class="remove mdi mdi-close-box"></i>
-                        </li>
-                        <li>
-                          <div class="form-check form-check-primary">
-                            <label class="form-check-label">
-                              <input class="checkbox" type="checkbox"> Pick up kids from school </label>
-                          </div>
-                          <i class="remove mdi mdi-close-box"></i>
-                        </li>
+                        <?php
+                          }
+                        ?>
                       </ul>
                     </div>
                   </div>
