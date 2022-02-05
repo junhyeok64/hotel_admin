@@ -1,3 +1,6 @@
+    <script type="text/javascript">
+      var page = "login";
+    </script>
     <div class="container-scroller">
       <div class="container-fluid page-body-wrapper full-page-wrapper">
         <div class="row w-100 m-0">
@@ -5,14 +8,15 @@
             <div class="card col-lg-4 mx-auto">
               <div class="card-body px-5 py-5">
                 <h3 class="card-title text-left mb-3">Login</h3>
-                <form>
+                <form name="login_form">
+                  <input type="hidden" name="mode" value="login">
                   <div class="form-group">
                     <label>Username or email *</label>
-                    <input type="text" class="form-control p_input">
+                    <input type="text" name="userid" class="form-control p_input">
                   </div>
                   <div class="form-group">
                     <label>Password *</label>
-                    <input type="text" class="form-control p_input">
+                    <input type="password" name="password" class="form-control p_input">
                   </div>
                   <div class="form-group d-flex align-items-center justify-content-between">
                     <div class="form-check">
@@ -22,7 +26,7 @@
                     <a href="#" class="forgot-pass">Forgot password</a>
                   </div>
                   <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-block enter-btn">Login</button>
+                    <button type="button" onclick="javascript:admin.login();" class="btn btn-primary btn-block enter-btn">Login</button>
                   </div>
                   <!--<div class="d-flex" style="display:none">
                     <button class="btn btn-facebook mr-2 col">
