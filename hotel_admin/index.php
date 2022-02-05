@@ -1,6 +1,6 @@
 <?php
 	include "./common/top.php";
-	if($alogin != true) {
+	if(admin_login != "true") {
 		include "login.php";
 	} else {
 		include "main.php";
