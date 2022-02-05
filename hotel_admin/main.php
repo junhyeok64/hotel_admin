@@ -8,110 +8,111 @@
         <!-- partial:partials/_navbar.html -->
         <?php
           include "./common/sub_top.php";
+          //'Y','S','C','T'
+          $month_arr  = array();
+          $prev_arr   = array();
+          $state_qry = "select state from reserve group by state";
+          $state_res = mysqli_query($dbconn, $state_qry);
+          while($state_row = mysqli_fetch_array($state_res)) {
+            $month_arr[$state_row["state"]] = 0;
+            $prev_arr[$state_row["state"]] = 0;
+          }
+
+          $month_qry = "select sum(price) as price, state from reserve where 1=1 ";
+          $month_qry .= " and reserve_time >= '".date("Y-m-01 00:00:00")."' and reserve_time <= '".date("Y-m-d 23:59:59")."'";
+          $month_qry .= " group by state";
+          $month_res = mysqli_query($dbconn, $month_qry);
+          while($month_row = @mysqli_fetch_array($month_res)) {
+            $month_arr[$month_row["state"]] += $month_row["price"];
+          }
+          
+          $month_price    = $month_arr["Y"]+$month_arr["S"]+$month_arr["E"];
+          $month_success  = $month_arr["E"]+$month_arr["S"];
+          $month_cancel   = $month_arr["C"];
+
+          $prev_qry = "select * from reserve_prev where 1=1 ";
+          $prev_qry .= " and date = '".date("Y-m", strtotime(date("Y-m")." -1 month"))."'";
+          $prev_res = mysqli_query($dbconn, $prev_qry);
+          $prev_row = @mysqli_fetch_array($prev_res);
+
+          $prev_price = ($prev_row["price"] == "") ? 0 : $prev_row["price"];
+          $prev_success = ($prev_row["success"] == "") ? 0 : $prev_row["success"];
+          $prev_cancel = ($prev_row["cancel"] == "") ? 0 : $prev_row["cancel"];
+
+          $per_price = ($month_price>0) ? @(($month_price - $prev_price) / $month_price)*100 : "당월 금액이 없어 비교 할 수 없습니다.";
+          if($per_price  != "당월 금액이 없어 비교 할 수 없습니다.") {
+            $per_price = ($per_price > 0) ? "+".@number_format($per_price,2)."%" : "".@number_format($per_price,2)."%";
+            $css_price = ($per_price > 0) ? " text-success" : " text-danger";
+          }
+          $per_success = ($month_success>0) ? @(($month_success - $prev_success) / $month_success)*100 : "당월 금액이 없어 비교 할 수 없습니다.";
+          if($per_success  != "당월 금액이 없어 비교 할 수 없습니다.") {
+            $per_success = ($per_success > 0) ? "+".@number_format($per_success,2)."%" : "".@number_format($per_success,2)."%";
+            $css_success = ($per_success > 0) ? " text-success" : " text-danger";
+          }
+          $per_cancel = ($month_cancel>0) ? @(($month_cancel - $prev_cancel) / $month_cancel)*100 : "당월 금액이 없어 비교 할 수 없습니다.";
+          if($per_cancel  != "당월 금액이 없어 비교 할 수 없습니다.") {
+            $per_cancel = ($per_cancel > 0) ? "+".@number_format($per_cancel,2)."%" : "".@number_format($per_cancel,2)."%";
+            $css_cancel = ($per_cancel > 0) ? " text-success" : " text-danger";
+          }
         ?>
         <!-- partial -->
         <div class="main-panel">
           <div class="content-wrapper">
             <div class="row">
-              <div class="col-12 grid-margin stretch-card">
-                <div class="card corona-gradient-card">
-                  <div class="card-body py-0 px-0 px-sm-3">
-                    <div class="row align-items-center">
-                      <div class="col-4 col-sm-3 col-xl-2">
-                        <img src="assets/images/dashboard/Group126@2x.png" class="gradient-corona-img img-fluid" alt="">
+              <div class="col-sm-4 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h5>당월 예약금액</h5>
+                    <div class="row">
+                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                        <div class="d-flex d-sm-block d-md-flex align-items-center">
+                          <h2 class="mb-0"><?=won?> <?=@number_format($month_price)?></h2>
+                          <p class="ml-2 mb-0 font-weight-medium<?=$css_price?>"><?=$per_price?></p>
+                        </div>
+                        <h6 class="text-muted font-weight-normal"> Since last month</h6>
                       </div>
-                      <div class="col-5 col-sm-7 col-xl-8 p-0">
-                        <h4 class="mb-1 mb-sm-0">Want even more features?</h4>
-                        <p class="mb-0 font-weight-normal d-none d-sm-block">Check out our Pro version with 5 unique layouts!</p>
-                      </div>
-                      <div class="col-3 col-sm-2 col-xl-2 pl-0 text-center">
-                        <span>
-                          <a href="https://www.bootstrapdash.com/product/corona-admin-template/" target="_blank" class="btn btn-outline-light btn-rounded get-started-btn">Upgrade to PRO</a>
-                        </span>
+                      <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                        <i class="icon-lg mdi mdi-codepen text-primary ml-auto"></i>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+              <div class="col-sm-4 grid-margin">
                 <div class="card">
                   <div class="card-body">
+                    <h5>당월 확정금액</h5>
                     <div class="row">
-                      <div class="col-9">
-                        <div class="d-flex align-items-center align-self-start">
-                          <h3 class="mb-0">$12.34</h3>
-                          <p class="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
+                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                        <div class="d-flex d-sm-block d-md-flex align-items-center">
+                          <h2 class="mb-0"><?=won?> <?=@number_format($month_success)?></h2>
+                          <p class="ml-2 mb-0 font-weight-medium<?=$css_success?>"><?=$per_success?></p>
                         </div>
+                        <h6 class="text-muted font-weight-normal"> Since last month</h6>
                       </div>
-                      <div class="col-3">
-                        <div class="icon icon-box-success ">
-                          <span class="mdi mdi-arrow-top-right icon-item"></span>
-                        </div>
+                      <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                        <i class="icon-lg mdi mdi-wallet-travel text-success ml-auto"></i>
                       </div>
                     </div>
-                    <h6 class="text-muted font-weight-normal">Potential growth</h6>
                   </div>
                 </div>
               </div>
-              <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+              <div class="col-sm-4 grid-margin">
                 <div class="card">
                   <div class="card-body">
+                    <h5>당월 취소금액</h5>
                     <div class="row">
-                      <div class="col-9">
-                        <div class="d-flex align-items-center align-self-start">
-                          <h3 class="mb-0">$17.34</h3>
-                          <p class="text-success ml-2 mb-0 font-weight-medium">+11%</p>
+                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                        <div class="d-flex d-sm-block d-md-flex align-items-center">
+                          <h2 class="mb-0"><?=won?> <?=@number_format($month_cancel)?></h2>
+                          <p class="ml-2 mb-0 font-weight-medium<?=$css_cancel?>"><?=$per_cancel?> </p>
                         </div>
+                        <h6 class="text-muted font-weight-normal"> Since last month</h6>
                       </div>
-                      <div class="col-3">
-                        <div class="icon icon-box-success">
-                          <span class="mdi mdi-arrow-top-right icon-item"></span>
-                        </div>
+                      <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                        <i class="icon-lg mdi mdi-monitor text-danger ml-auto"></i>
                       </div>
                     </div>
-                    <h6 class="text-muted font-weight-normal">Revenue current</h6>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-9">
-                        <div class="d-flex align-items-center align-self-start">
-                          <h3 class="mb-0">$12.34</h3>
-                          <p class="text-danger ml-2 mb-0 font-weight-medium">-2.4%</p>
-                        </div>
-                      </div>
-                      <div class="col-3">
-                        <div class="icon icon-box-danger">
-                          <span class="mdi mdi-arrow-bottom-left icon-item"></span>
-                        </div>
-                      </div>
-                    </div>
-                    <h6 class="text-muted font-weight-normal">Daily Income</h6>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-9">
-                        <div class="d-flex align-items-center align-self-start">
-                          <h3 class="mb-0">$31.53</h3>
-                          <p class="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
-                        </div>
-                      </div>
-                      <div class="col-3">
-                        <div class="icon icon-box-success ">
-                          <span class="mdi mdi-arrow-top-right icon-item"></span>
-                        </div>
-                      </div>
-                    </div>
-                    <h6 class="text-muted font-weight-normal">Expense current</h6>
                   </div>
                 </div>
               </div>
@@ -257,70 +258,11 @@
                 </div>
               </div>
             </div>
-            <div class="row">
-              <div class="col-sm-4 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h5>Revenue</h5>
-                    <div class="row">
-                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                        <div class="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 class="mb-0">$32123</h2>
-                          <p class="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
-                        </div>
-                        <h6 class="text-muted font-weight-normal">11.38% Since last month</h6>
-                      </div>
-                      <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                        <i class="icon-lg mdi mdi-codepen text-primary ml-auto"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-4 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h5>Sales</h5>
-                    <div class="row">
-                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                        <div class="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 class="mb-0">$45850</h2>
-                          <p class="text-success ml-2 mb-0 font-weight-medium">+8.3%</p>
-                        </div>
-                        <h6 class="text-muted font-weight-normal"> 9.61% Since last month</h6>
-                      </div>
-                      <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                        <i class="icon-lg mdi mdi-wallet-travel text-danger ml-auto"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-4 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h5>Purchase</h5>
-                    <div class="row">
-                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                        <div class="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 class="mb-0">$2039</h2>
-                          <p class="text-danger ml-2 mb-0 font-weight-medium">-2.1% </p>
-                        </div>
-                        <h6 class="text-muted font-weight-normal">2.27% Since last month</h6>
-                      </div>
-                      <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                        <i class="icon-lg mdi mdi-monitor text-success ml-auto"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
             <div class="row ">
               <div class="col-12 grid-margin">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">Order Status</h4>
+                    <h4 class="card-title">Reserve Status</h4>
                     <div class="table-responsive">
                       <table class="table">
                         <thead>
@@ -332,7 +274,7 @@
                                 </label>
                               </div>
                             </th>
-                            <th> Booker </th>
+                            <th> Booker (Phone) </th>
                             <th> Room Type - (Room_cnt) </th>
                             <th> Room Cost </th>
                             <th> Stay </th>
@@ -356,17 +298,17 @@
                             while($reserve_row = mysqli_fetch_array($reserve_res)) {
                               $night = $util->date_diff($reserve_row["sdate"], $reserve_row["edate"]);
                               $show_state = $css_state =  "";
-                              switch($reserve_row["state"]) {
+                              switch($reserve_row["state"]) {//'Y','S','C','T'
                                 case "Y"://예약시도
                                   $show_state = "예약확인";
                                   $css_state = " badge-outline-success";
                                 break;
-                                case "P":
-                                  $show_state = "결제완료";
-                                  $css_state = "badge-outline-success";
-                                break;
                                 case "S":
                                   $show_state = "예약확정";
+                                  $css_state = "badge-outline-success";
+                                break;
+                                case "E":
+                                  $show_state = "투숙완료";
                                   $css_state = "badge-outline-success";
                                 break;
                                 case "C":
@@ -393,7 +335,7 @@
                             </td>
                             <td>
                               <!--<img src="assets/images/faces/face1.jpg" alt="image" />-->
-                              <span class="pl-2"><?=$reserve_row["reserve_name"]?></span>
+                              <span class="pl-2"><?=$reserve_row["reserve_name"]?> (<?=$reserve_row["phone"]?>)</span>
                             </td>
                             <td> <?=$room[$reserve_row["room_type"]]["name"]?> - ( <?=$reserve_row["room_cnt"]?> 개 )</td>
                             <td> <?=won?> <?=@number_format($reserve_row["price"])?> </td>
@@ -574,7 +516,7 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div class="row" style="display:none;">
               <div class="col-12">
                 <div class="card">
                   <div class="card-body">
