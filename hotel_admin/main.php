@@ -485,13 +485,14 @@
                           $todo_res = mysqli_query($dbconn, $todo_qry);
                           while($todo_row = @mysqli_fetch_array($todo_res)) {
                             $checked = ($todo_row["check"] == "N") ? "" : " checked";
+                            $complete = ($todo_row["check"] == "N") ? "" : "completed";
                         ?>
-                        <li>
+                        <li class="<?=$complete?>">
                           <div class="form-check form-check-primary">
                             <label class="form-check-label">
-                              <input name="num[]" value="<?=$todo_row['num']?>" class="checkbox" type="checkbox"<?=$checked?>> <?=$todo_row["text"]?> </label>
+                              <input name="num[]" value="<?=$todo_row['num']?>" class="checkbox" onchange="admin.todo_change('<?=$todo_row["num"]?>','check', this.checked)" type="checkbox"<?=$checked?>> <?=$todo_row["text"]?> </label>
                           </div>
-                          <i class="remove mdi mdi-close-box" onclick=""></i>
+                          <i class="remove mdi mdi-close-box" onclick="admin.todo_change('<?=$todo_row["num"]?>','state')"></i>
                         </li>
                         <?php
                           }
