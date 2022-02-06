@@ -40,5 +40,22 @@
 				echo "FAIL||";
 			}
 		break;
+		case "todo_change":
+			$qry = "";
+			switch($type) {
+				case "check":
+					$checked = ($val == "true") ? "Y" : "N";
+					$qry = "update todo set `check` = '".$checked."' where num = '".$num."'";
+				break;
+				case "state":
+					$qry = "update todo set `state` = 'N' where num = '".$num."'";
+				break;
+			}
+			
+			if($qry != "") {
+				echo $qry;
+				$res = mysqli_query($dbconn, $qry);
+			}
+		break;
 	}
 ?>

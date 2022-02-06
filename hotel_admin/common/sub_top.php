@@ -170,7 +170,7 @@
                     </div>
                   </a>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item preview-item">
+                  <a class="dropdown-item preview-item" onclick="admin.form_ajax('logout','html')">
                     <div class="preview-thumbnail">
                       <div class="preview-icon bg-dark rounded-circle">
                         <i class="mdi mdi-logout text-danger"></i>
@@ -190,3 +190,4 @@
             </button>
           </div>
         </nav>
+        <form name="logout"><input type="hidden" name="mode" value="logout"></form>
