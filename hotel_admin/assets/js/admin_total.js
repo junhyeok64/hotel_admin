@@ -62,6 +62,19 @@ var admin = {
 				$("#todo_list").html(e);
 			}
 		})
+	},
+	room_count : function(type) {
+		switch(type) {
+			case "calender": case "table":
+				$('input[name=show_type]').val(type);
+				admin.form_ajax('room_count_form', 'html');
+				$("#show_type").html(type.charAt(0).toUpperCase()+type.slice(1));
+			break;
+		}
+	},
+	room_count_page : function(type) {
+		$("input[name='type']").val(type);
+		admin.form_ajax("room_count_form", "html");
 	}
 }
 $("input[name='password']").keyup(function(e){

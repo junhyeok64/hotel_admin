@@ -17,9 +17,7 @@
           //상단 탑메뉴 분리
           include "./common/sub_top.php";
           $sdate = $_sdate = date("Y-m-01");
-          $edate = $_edate = date("Y-m-t");
-
-          
+          $edate = $_edate = date("Y-m-t");       
 
         ?>
         <style type="text/css">
@@ -37,7 +35,8 @@
 			<input type="hidden" name="mode" value="room_count">
 			<input type="hidden" name="sdate" value="<?=$sdate?>">
 			<input type="hidden" name="edate" value="<?=$edate?>">
-			<input type="hidden" name="type" value="calender">
+			<input type="hidden" name="show_type" value="calender">
+			<input type="hidden" name="type" value="month">
 		</form>
         <div class="main-panel">
           <div class="content-wrapper">
@@ -49,9 +48,9 @@
                 <div class="card">
                   <div class="card-body">
                   	<h3 class="top_title">
-                  		<i class="mdi mdi-arrow-left-drop-circle" style="cursor:pointer;float:left;" onclick="admin.todo_paging('prev')"></i>
-                  		<?=date("Y-m")?>
-                  		<i class="mdi mdi-arrow-right-drop-circle" style="cursor:pointer;float:right;" onclick="admin.todo_paging('next')"></i>
+                  		<i class="mdi mdi-arrow-left-drop-circle" style="cursor:pointer;float:left;" onclick="admin.room_count_page('prev')"></i>
+                  		<b class="top_title_text"><?=date("Y-m")?></b>
+                  		<i class="mdi mdi-arrow-right-drop-circle" style="cursor:pointer;float:right;" onclick="admin.room_count_page('next')"></i>
                   	</h3>
                   	
                     <div style="float:right;margin:1.125rem 0;">

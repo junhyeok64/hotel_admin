@@ -90,5 +90,166 @@
 			$out .= "</script>";
 			echo $out;
 		break;
+		case "room_count":
+			/*
+			sdate edate type 
+			*/
+			switch($type) {
+				case "prev":	//전월
+					$sdate = date("Y-m-d", strtotime($sdate." -1 months"));
+					$edate = date("Y-m-t", strtotime($sdate));
+				break;
+				case "next":	//익월
+					$sdate = date("Y-m-d", strtotime($sdate." +1 months"));
+					$edate = date("Y-m-t", strtotime($sdate));
+				break;
+				case "month":	//금월
+				default:
+					$sdate = $sdate;
+					$edate = $edate;
+				break;
+			}
+
+			$_sdate = $sdate;
+			$_edate = $edate;
+			$room = array();
+			$room_qry = "select * from room where state = 'Y' order by num asc";
+			$room_res = mysqli_query($dbconn, $room_qry);
+			while($room_row = mysqli_fetch_array($room_res)) {
+				$room[$room_row["num"]]["name"] = $room_row["name"];
+				$room[$room_row["num"]]["img"] = $room_row["img"];
+			}
+			$data = array();
+    		for($sdate; $sdate<=$edate; $sdate = date("Y-m-d", strtotime($sdate." +1 days"))) {
+    			$data[$sdate] = array();
+    		}
+    		$cnt_qry = "select * from reserve_check where 1=1 and date >= '".$_sdate."' and date <= '".$_edate."'";
+    		$cnt_qry .= " order by date asc"; //객실타입대로 밀어넣다보니 order by 없으면 prev_date 안먹힘
+    		$cnt_res = mysqli_query($dbconn, $cnt_qry);
+    		$i=0;
+    		while($cnt_row = @mysqli_fetch_array($cnt_res)) {
+    			if($prev_date != $cnt_row["date"]) {
+    				$i = 0; //배열 뽑기 편하게 일자 바뀌면 0으로 리셋
+    			}
+    			$data[$cnt_row["date"]][$i]["name"] = $room[$cnt_row["room_type"]]["name"];
+    			$data[$cnt_row["date"]][$i]["cnt"] = $cnt_row["cnt"];
+    			$data[$cnt_row["date"]][$i]["room_type"] = $cnt_row["room_type"];
+    			$i++; $prev_date = $cnt_row["date"];
+    		}
+
+			if($show_type == "calender") {
+				$out = "<tr>";
+        		$sdate = $_sdate; //리필
+
+        		for($sdate; $sdate<=$edate; $sdate = date("Y-m-d", strtotime($sdate." +1 days"))) {
+
+        			$show_room = "";
+        			$today_room = count($data[$sdate]);
+        			for($t=0; $t<$today_room; $t++) {
+        				$show_room .= "<br/>".$data[$sdate][$t]["name"]." - ".$data[$sdate][$t]["cnt"];
+        			}
+
+        			$yoile = date("w", strtotime($sdate));
+        			switch($yoile) {
+        				case "0":
+        					$class = "red";
+        				break;
+        				case "6":
+        					$class = "blue";
+        				break;
+        				default:
+        					$class = "";
+        				break;
+        			}
+        			if($_sdate == $sdate) { //첫날 요일잡아주기
+        				for($i=0;$i<=$yoile; $i++) {
+        					switch($i) {
+                				case "0":
+                					$class = "red";
+                				break;
+                				case "6":
+                					$class = "blue";
+                				break;
+                				default:
+                					$class = "";
+                				break;
+                			}
+                			if($i!=$yoile) {
+        						$out .= "<td class='".$class."'></td>";
+        					}
+        				}
+        				$out .= "<td class='".$class."'><b>".$sdate."</b>".$show_room."</td>";
+        			} else {
+        				$out .= "<td class='".$class."'><b>".$sdate."</b>".$show_room."</td>";
+        			}
+        			if($yoile == 6) {
+        				$out .= "</tr><tr>";
+        			}
+        		}
+        		
+        		$edate_yolie = date("w", strtotime($edate));
+        		for($edate_yolie; $edate_yolie<6; $edate_yolie++) {
+        			$out .= "<td></td>";
+        		}
+        		$out .= "</tr>";
+        		echo "<script type=\"text/javascript\">";
+        		echo "$('#room_calender').show();";
+        		echo "$('#room_table').hide();";
+        		echo "$('#room_calender_data').html(\"".$out."\");";
+        		echo "$(\"input[name='sdate']\").val('".$_sdate."');";
+        		echo "$(\"input[name='edate']\").val('".$_edate."');";
+        		echo "$(\"input[name='type']\").val('month');";
+        		echo "$('.top_title_text').html(\"".date("Y-m", strtotime($_sdate))."\");";
+        		echo "</script>";
+
+			} else if ($show_type == "table") {
+				$out = "";
+				$sdate = $_sdate; //리필
+
+        		for($sdate; $sdate<=$edate; $sdate = date("Y-m-d", strtotime($sdate." +1 days"))) {
+        			$yoile = date("w", strtotime($sdate));
+        			switch($yoile) {
+        				case "0":
+        					$class = "red";
+        				break;
+        				case "6":
+        					$class = "blue";
+        				break;
+        				default:
+        					$class = "";
+        				break;
+        			}
+
+        			$out .= "<tr class='".$class."'>";
+        			$show_room = "";
+        			$today_room = count($data[$sdate]);
+        			$out .= "<td class='center' rowspan='".($today_room+1)."'>".$sdate."</td>";
+        			if($today_room == 0) {
+        				$out .= "<td colspan='2'></td>";
+        			}
+        			for($t=0; $t<$today_room; $t++) {
+        				//$show_room .= "<br/>".$data[$sdate][$t]["name"]." - ".$data[$sdate][$t]["cnt"];
+        				$out .= "<td>";
+        				$out .= $data[$sdate][$t]["name"];
+        				$out .= "</td>";
+        				$out .= "<td>";
+        				$out .= $data[$sdate][$t]["cnt"];
+        				$out .= "</td>";
+        				$out .= "</tr><tr class='".$class."'>";
+        			}
+        			$out .= "</tr>";
+        		}
+        		echo "<script type=\"text/javascript\">";
+        		echo "$('#room_calender').hide();";
+        		echo "$('#room_table').show();";
+        		echo "$('#room_table_data').html(\"".$out."\");";
+        		echo "$(\"input[name='sdate']\").val('".$_sdate."');";
+        		echo "$(\"input[name='edate']\").val('".$_edate."');";
+        		echo "$(\"input[name='type']\").val('month');";
+        		echo "$('.top_title_text').html(\"".date("Y-m", strtotime($_sdate))."\");";
+        		echo "</script>";
+
+			}
+		break;
 	}
 ?>
