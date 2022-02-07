@@ -42,7 +42,8 @@ function todo_insert() {
           var res = e.split("||");
           if(res[0] == "SUCC") {
             var new_num = res[1];
-            todoListItem.prepend("<li><div class='form-check'><label class='form-check-label'><input class='checkbox' name='num[]' value='"+new_num+"' type='checkbox'/>" + item + "<i class='input-helper'></i></label></div><i class='remove mdi mdi-close-box' onclick='admin.todo(\""+new_num+"\")'></i></li>");
+            todoListItem.prepend("<li><div class='form-check'><label class='form-check-label'><input class='checkbox new_todolist' name='num[]' value='"+new_num+"' type='checkbox'/>" + item + "<i class='input-helper'></i></label></div><i class='remove mdi mdi-close-box' onclick='admin.todo(\""+new_num+"\")'></i></li>");
+            $(".new_todolist").attr("onchange", "admin.todo_change('"+new_num+"', 'check', this.checked)");
             todoListInput.val("");
           }
         }

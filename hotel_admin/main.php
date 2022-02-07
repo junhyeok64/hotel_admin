@@ -156,15 +156,19 @@
                       $transaction_qry .= " group by DATE_FORMAT(reserve_time, '%Y-%m-%d')";
 
                       $transaction_res = mysqli_query($dbconn, $transaction_qry);
+                      $transaction_total = 0;//그래프용 합산금액
                       while($transaction_row = @mysqli_fetch_array($transaction_res)) {
                         $transaction_arr[$transaction_row["date"]] = $transaction_row["price"];
+                        $transaction_total += $transaction_row["price"];
                       }
 
                       foreach($transaction_arr as $key=>$value) {
                         $trans_diff = $util->date_diff(date("Y-m-d"), $key);
                         $show_diff = ($trans_diff == 0) ? "당일" : $trans_diff."일전";
+                        $show_per = ($value == 0) ? 0 : @($value/$transaction_total)*100;
                     ?>
                     <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
+                      <input type="hidden" name="transaction_<?=$trans_diff?>" value="<?=$show_per?>"/>
                       <div class="text-md-center text-xl-left">
                         <h6 class="mb-1"><?=$key?></h6>
                         <p class="text-muted mb-0"><?=$show_diff?></p>
@@ -174,6 +178,7 @@
                       </div>
                     </div>
                     <?php } ?>
+                    <input type="hidden" name="transaction_total" value="<?=won?> <?=@number_format($transaction_total)?>">
                   </div>
                 </div>
               </div>
@@ -181,7 +186,7 @@
                 <div class="card">
                   <div class="card-body">
                     <div class="d-flex flex-row justify-content-between">
-                      <h4 class="card-title mb-1">Open Projects</h4>
+                      <h4 class="card-title mb-1">Room Count</h4>
                       <p class="text-muted mb-1">Your data status</p>
                     </div>
                     <div class="row">

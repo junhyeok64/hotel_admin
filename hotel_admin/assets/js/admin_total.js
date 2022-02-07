@@ -37,7 +37,7 @@ var admin = {
 			url  : "state.php",
 			success : function(e) {
 				//alert(e);
-				admin.todo_paging('');
+				//admin.todo_paging('');
 			}
 		})
 	},

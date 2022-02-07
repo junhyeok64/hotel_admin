@@ -62,12 +62,15 @@
       });
     }
     if ($("#transaction-history").length) {
+      var today = $("input[name='transaction_0']").val();
+      var yesterday = $("input[name='transaction_1']").val();
+      var yesterday2 = $("input[name='transaction_2']").val();
       var areaData = {
-        labels: ["Paypal", "Stripe","Cash"],
+        labels: ["당일", "1일전","2일전"],
         datasets: [{
-            data: [55, 25, 20],
+            data: [today, yesterday, yesterday2],
             backgroundColor: [
-              "#111111","#00d25b","#ffab00"
+              "#6c7293","#00d25b","#ffab00"
             ]
           }
         ]
@@ -102,7 +105,7 @@
           ctx.textBaseline = "middle";
           ctx.fillStyle = "#ffffff";
       
-          var text = "$1200", 
+          var text = $("input[name='transaction_total']").val(), 
               textX = Math.round((width - ctx.measureText(text).width) / 2),
               textY = height / 2.4;
       
