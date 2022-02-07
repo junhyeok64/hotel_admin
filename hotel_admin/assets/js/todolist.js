@@ -10,9 +10,9 @@
 
     todoListItem.on('change', '.checkbox', function() {
       if ($(this).attr('checked')) {
-        $(this).removeAttr('checked');
+        //$(this).removeAttr('checked');
       } else {
-        $(this).attr('checked', 'checked');
+        //$(this).attr('checked', 'checked');
       }
 
       $(this).closest("li").toggleClass('completed');

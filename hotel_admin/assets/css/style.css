@@ -21133,3 +21133,14 @@ div.tagsinput {
   flex-grow: 1; }
 
 /*# sourceMappingURL=maps/style.css.map */
+
+.todo_button {
+    color:black;
+    position:absolute;
+    font-size:2rem;
+    top:10px;
+    bottom:100%;
+    text-align:right;
+    width:100%;
+    padding:0 2.5rem;
+}

@@ -37,6 +37,29 @@ var admin = {
 			url  : "state.php",
 			success : function(e) {
 				//alert(e);
+				admin.todo_paging('');
+			}
+		})
+	},
+	todo_paging : function(type) {
+		var todo_page = $("input[name='todo_page']").val();
+		var todo_end = $("input[name='todo_end']").val();
+		if(type != "") {
+			if((todo_page == todo_end || todo_page > todo_end) && type == "next") {
+				alert("마지막페이지입니다");
+				return false;
+			}
+			if((todo_page < 1 || todo_page == 1) && type == "prev") {
+				alert("첫번째페이지입니다");
+				return false;
+			}
+		}
+		$.ajax({
+			type : "POST",
+			data : {"mode":"todo_paging", "type":type, "page":todo_page},
+			url  : "state.php",
+			success : function(e) {
+				$("#todo_list").html(e);
 			}
 		})
 	}
