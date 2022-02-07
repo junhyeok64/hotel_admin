@@ -30,8 +30,8 @@
 		break;
 		case "todo_add":
 			$text = addslashes($text);
-			$in_qry = "insert into todo (`text`, `check`, `state`) values ";
-			$in_qry .= "('".$text."', 'N', 'Y')";
+			$in_qry = "insert into todo (`text`, `check`, `state`, `wdate`) values ";
+			$in_qry .= "('".$text."', 'N', 'Y', now())";
 			$in_res = mysqli_query($dbconn, $in_qry);
 			if($in_res) {
 				$in_num = @mysqli_insert_id($dbconn);
@@ -56,6 +56,39 @@
 				echo $qry;
 				$res = mysqli_query($dbconn, $qry);
 			}
+		break;
+		case "todo_paging":
+			if($type != "") {
+				$page = ($type == "next") ? $page+1 : $page-1;
+				$page = ($page < 0) ? 1 : $page;
+			}
+			$start = ($page-1)*5;
+			$limit = 5;
+			$todo_qry = "select * from todo where state='Y' order by `check`='N' desc ,num desc";
+			$todo_cres = mysqli_query($dbconn, $todo_qry);
+			$todo_cnt = @mysqli_num_rows($todo_cres);
+			$todo_qry .= " limit ".$start.",".$limit."";
+			$todo_res = mysqli_query($dbconn, $todo_qry);
+			$out = "";
+			while($todo_row = @mysqli_fetch_array($todo_res)) {
+				$checked = ($todo_row["check"] == "N") ? "" : " checked";
+				$complete = ($todo_row["check"] == "N") ? "" : "completed";
+				$out .= "<li class=\"".$complete."\">";
+				$out .= "<div class=\"form-check form-check-primary\">";
+				$out .= "<label class=\"form-check-label\">";
+				$out .= "<input name='num[]' type='checkbox' class='checkbox' value=\"".$todo_row["num"]."\" onchange=\"admin.todo_change('".$todo_row["num"]."', 'check', this.checked)\"".$checked."/>";
+				$out .= $todo_row["text"];
+				$out .= "<i class='input-helper'></i>";
+				$out .= "</label>";
+				$out .= "</div>";
+				$out .= "<i class=\"remove mdi mdi-close-box\" onclick=\"admin.todo_change('".$todo_row["num"]."','state')\"></i>";
+				$out .= "</li>";
+			}
+			$out .= "<script type=\"text/javascript\">";
+			$out .= "$(\"input[name='todo_page']\").val('".($page)."');";
+			$out .= "$(\"input[name='todo_end']\").val('".@ceil($todo_cnt/$limit)."');";
+			$out .= "</script>";
+			echo $out;
 		break;
 	}
 ?>

@@ -1,19 +1,35 @@
     <script type="text/javascript">
       var page = "main";
     </script>
+    <style type="text/css">
+      /* Track */
+::-webkit-scrollbar-track {
+  background: black;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+    </style>
     <div class="container-scroller">
       <!-- partial:partials/_sidebar.html -->
       <?php
+        //좌측 사이드메뉴 분리
         include "./common/left_menu.php";
       ?>
       <!-- partial -->
       <div class="container-fluid page-body-wrapper">
         <!-- partial:partials/_navbar.html -->
         <?php
+          //상단 탑메뉴 분리
           include "./common/sub_top.php";
           //'Y','S','C','T'
           $month_arr  = array();
           $prev_arr   = array();
+
+          //당월, 전월 결제상태별 금액 조회
           $state_qry = "select state from reserve group by state";
           $state_res = mysqli_query($dbconn, $state_qry);
           while($state_row = mysqli_fetch_array($state_res)) {
@@ -33,6 +49,7 @@
           $month_success  = $month_arr["E"]+$month_arr["S"];
           $month_cancel   = $month_arr["C"];
 
+          //전월 결제금액은 _prev 테이블에 미리 저장하여 조회
           $prev_qry = "select * from reserve_prev where 1=1 ";
           $prev_qry .= " and date = '".date("Y-m", strtotime(date("Y-m")." -1 month"))."'";
           $prev_res = mysqli_query($dbconn, $prev_qry);
@@ -128,6 +145,7 @@
                     <canvas id="transaction-history" class="transaction-chart"></canvas>
                     <?php
                       //'Y','S','C','T'
+                      //당일, 하루전, 이틀전 금액 조회
                       $transaction_arr = array();
                       //매출 없을땔 위해, 역순출력을 위해 초기화
                        $transaction_arr[date("Y-m-d", strtotime(date("Y-m-d")." -2 days"))] = $transaction_arr[date("Y-m-d", strtotime(date("Y-m-d")." -1 days"))] = $transaction_arr[date("Y-m-d")] = 0;
@@ -288,6 +306,7 @@
                         </thead>
                         <tbody>
                           <?php
+                            //객실 정보 미리 불러다놓고 결제내역 내에서 반복조회 x
                             $room_qry = "select * from room";
                             $room_res = mysqli_query($dbconn, $room_qry);
                             $room = array();
@@ -295,6 +314,7 @@
                               $room[$room_row["num"]]["name"] = $room_row["name"];
                               $room[$room_row["num"]]["img"] = $room_row["img"];
                             }
+                            //상위 다섯개만 불러오고 추가적인 결제건들은 리스팅 페이지로 가서 조회하기
                             $reserve_qry = "select * from reserve where 1=1 ";
                             $reserve_qry .= " order by num desc limit 0, 5";
                             $reserve_res = mysqli_query($dbconn, $reserve_qry);
@@ -364,66 +384,52 @@
                 <div class="card">
                   <div class="card-body">
                     <div class="d-flex flex-row justify-content-between">
-                      <h4 class="card-title">Messages</h4>
+                      <h4 class="card-title">Review</h4>
                       <p class="text-muted mb-1 small">View all</p>
                     </div>
                     <div class="preview-list">
+                      <?php
+                        //리뷰 리스팅, 별도의 페이지 x
+                        $review_qry = "select * from review order by wdate desc limit 0,8";
+                        $review_res = mysqli_query($dbconn, $review_qry);
+
+                        while($review_row = mysqli_fetch_array($review_res)) {
+                          $reserve_qry = "select * from reserve where num = '".$review_row["reserve_num"]."'";
+                          $reserve_res = mysqli_query($dbconn, $reserve_qry);
+                          $reserve_row = @mysqli_fetch_array($reserve_res);
+                          $star = "";
+                          for($s=1; $s<=5; $s++) {
+                            if($s <= $review_row["star"]) {
+                              $star .= "<i class='fa fa-star'></i>";
+                            } else {
+                              $star .= "<i class='fa fa-star-o'></i>";
+                            }
+                          }
+                      ?>
                       <div class="preview-item border-bottom">
                         <div class="preview-thumbnail">
-                          <img src="assets/images/faces/face6.jpg" alt="image" class="rounded-circle" />
+                          <img src="<?=base_url?>/<?=$room[$reserve_row['room_type']]["img"]?>" alt="image" class="rounded-circle" />
                         </div>
                         <div class="preview-item-content d-flex flex-grow">
                           <div class="flex-grow">
                             <div class="d-flex d-md-block d-xl-flex justify-content-between">
-                              <h6 class="preview-subject">Leonard</h6>
-                              <p class="text-muted text-small">5 minutes ago</p>
+                              <h6 class="preview-subject">
+                                <a href="javascript:;"><?=$reserve_row["reserve_name"].$review_row["star"]?></a> - <?=$star?>
+                              </h6>
+                              <p class="text-muted text-small"><?=$review_row["wdate"]?></p>
                             </div>
-                            <p class="text-muted">Well, it seems to be working now.</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="preview-item border-bottom">
-                        <div class="preview-thumbnail">
-                          <img src="assets/images/faces/face8.jpg" alt="image" class="rounded-circle" />
-                        </div>
-                        <div class="preview-item-content d-flex flex-grow">
-                          <div class="flex-grow">
                             <div class="d-flex d-md-block d-xl-flex justify-content-between">
-                              <h6 class="preview-subject">Luella Mills</h6>
-                              <p class="text-muted text-small">10 Minutes Ago</p>
+                              <h6 class="preview-subject">
+                                <a href="javascript:;"><?=$room[$reserve_row["room_type"]]["name"]?></a>
+                              </h6>
                             </div>
-                            <p class="text-muted">Well, it seems to be working now.</p>
+                            <p class="text-muted"><?=$review_row["contents"]?></p>
                           </div>
                         </div>
                       </div>
-                      <div class="preview-item border-bottom">
-                        <div class="preview-thumbnail">
-                          <img src="assets/images/faces/face9.jpg" alt="image" class="rounded-circle" />
-                        </div>
-                        <div class="preview-item-content d-flex flex-grow">
-                          <div class="flex-grow">
-                            <div class="d-flex d-md-block d-xl-flex justify-content-between">
-                              <h6 class="preview-subject">Ethel Kelly</h6>
-                              <p class="text-muted text-small">2 Hours Ago</p>
-                            </div>
-                            <p class="text-muted">Please review the tickets</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="preview-item border-bottom">
-                        <div class="preview-thumbnail">
-                          <img src="assets/images/faces/face11.jpg" alt="image" class="rounded-circle" />
-                        </div>
-                        <div class="preview-item-content d-flex flex-grow">
-                          <div class="flex-grow">
-                            <div class="d-flex d-md-block d-xl-flex justify-content-between">
-                              <h6 class="preview-subject">Herman May</h6>
-                              <p class="text-muted text-small">4 Hours Ago</p>
-                            </div>
-                            <p class="text-muted">Thanks a lot. It was easy to fix it .</p>
-                          </div>
-                        </div>
-                      </div>
+                      <?php
+                        }
+                      ?>
                     </div>
                   </div>
                 </div>
@@ -472,16 +478,22 @@
                 <div class="card">
                   <div class="card-body">
                     <h4 class="card-title">To do list</h4>
+                    <div class="todo_button" style="">
+                      <i class="mdi mdi-arrow-left-drop-circle" style="cursor:pointer;" onclick="admin.todo_paging('prev')"></i>
+                      <i class="mdi mdi-arrow-right-drop-circle" style="cursor:pointer;" onclick="admin.todo_paging('next')"></i>
+                    </div>
                     <div class="add-items d-flex">
                       <form name="todo_list" style="display:contents;" onSubmit="return false;">
+                      <input type="hidden" name="todo_page" value="1">
+                      <input type="hidden" name="todo_end" value="99">
                       <input type="text" name="password" class="form-control todo-list-input" placeholder="enter task..">
                       <button type="button" class="add btn btn-primary todo-list-add-btn">Add</button>
                       </form>
                     </div>
                     <div class="list-wrapper">
-                      <ul class="d-flex flex-column text-white todo-list todo-list-custom">
+                      <ul class="d-flex flex-column text-white todo-list todo-list-custom" id="todo_list">
                         <?php
-                          $todo_qry = "select * from todo where state = 'Y' order by num desc limit 0,10";
+                          $todo_qry = "select * from todo where state='Y' order by `check`='N' desc ,num desc limit 0,10";
                           $todo_res = mysqli_query($dbconn, $todo_qry);
                           while($todo_row = @mysqli_fetch_array($todo_res)) {
                             $checked = ($todo_row["check"] == "N") ? "" : " checked";
@@ -490,7 +502,8 @@
                         <li class="<?=$complete?>">
                           <div class="form-check form-check-primary">
                             <label class="form-check-label">
-                              <input name="num[]" value="<?=$todo_row['num']?>" class="checkbox" onchange="admin.todo_change('<?=$todo_row["num"]?>','check', this.checked)" type="checkbox"<?=$checked?>> <?=$todo_row["text"]?> </label>
+                              <input name="num[]" value="<?=$todo_row['num']?>" class="checkbox" onchange="admin.todo_change('<?=$todo_row["num"]?>','check', this.checked)" type="checkbox"<?=$checked?>> <?=$todo_row["text"]?> 
+                            </label>
                           </div>
                           <i class="remove mdi mdi-close-box" onclick="admin.todo_change('<?=$todo_row["num"]?>','state')"></i>
                         </li>
