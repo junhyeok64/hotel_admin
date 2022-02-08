@@ -109,12 +109,14 @@
 
 			$_sdate = $sdate;	//초기화용 함수 따로 빼주기
 			$_edate = $edate;
-			$room = array();
+			$room = array();		//객실 정보 미리뽑기
+			$room_num = array();	//배열 매칭용 객실번호
 			$room_qry = "select * from room where state = 'Y' order by num asc";	//객실정보 미리 불러다 쿼리 최소한 사용하게
 			$room_res = mysqli_query($dbconn, $room_qry);
 			while($room_row = mysqli_fetch_array($room_res)) {
 				$room[$room_row["num"]]["name"] = $room_row["name"];
 				$room[$room_row["num"]]["img"] = $room_row["img"];
+				$room_num[] = $room_row["num"];
 			}
 			$data = array();
     		for($sdate; $sdate<=$edate; $sdate = date("Y-m-d", strtotime($sdate." +1 days"))) { //reserve_check에 비어있는날 있을수있으니 초기화
@@ -130,6 +132,7 @@
     			}
     			$data[$cnt_row["date"]][$i]["name"] = $room[$cnt_row["room_type"]]["name"];
     			$data[$cnt_row["date"]][$i]["cnt"] = $cnt_row["cnt"];
+    			$data[$cnt_row["date"]][$i]["price"] = $cnt_row["price"];
     			$data[$cnt_row["date"]][$i]["room_type"] = $cnt_row["room_type"];
     			$i++; $prev_date = $cnt_row["date"];
     		}
@@ -219,17 +222,25 @@
 
         			$out .= "<tr class='".$class."'>";
         			$show_room = "";
-        			$today_room = count($data[$sdate]);
+        			//$today_room = count($data[$sdate]);	//객실수량 조절을 위해 전체객실로 변경
+        			$today_room = count($room);
         			$out .= "<td class='center' rowspan='".($today_room+1)."'>".$sdate."</td>";
         			if($today_room == 0) {
         				$out .= "<td colspan='2'></td>";
         			}
         			for($t=0; $t<$today_room; $t++) {
         				$out .= "<td>";
-        				$out .= $data[$sdate][$t]["name"];
+        				$out .= $room[$room_num[$t]]["name"];
         				$out .= "</td>";
         				$out .= "<td>";
-        				$out .= $data[$sdate][$t]["cnt"];
+        				$out .= "<input name='rcnt_price_".$sdate."_".$room_num[$t]."' class='rcnt_price form-control' value='".$data[$sdate][$t]["price"]."' numberOnly >";
+        				$out .= "</td>";
+        				$out .= "<td>";
+        				$out .= "<input name='rcnt_cnt_".$sdate."_".$room_num[$t]."' class='rcnt_cnt form-control max-width50' value='".$data[$sdate][$t]["cnt"]."' numberOnly >";
+        				$out .= "</td>";
+        				$out .= "<td class='center'>";
+						$out .= "<i class='mdi mdi-arrow-up-drop-circle' onclick=\\\"admin.room_count_detail_change(\'".$sdate."\', \'".$room[$room_num[$t]]["room_type"]."\', \'up\')\\\"></i>";
+						$out .= "<i class='mdi mdi-arrow-down-drop-circle' onclick=\\\"admin.room_count_detail_change(\'".$date."\', \'".$room[$room_num[$t]]["room_type"]."\', \'down\')\\\"></i>";
         				$out .= "</td>";
         				$out .= "</tr><tr class='".$class."'>";
         			}
@@ -243,6 +254,26 @@
         		echo "$(\"input[name='edate']\").val('".$_edate."');";
         		echo "$(\"input[name='type']\").val('month');";
         		echo "$('.top_title_text').html(\"".date("Y-m", strtotime($_sdate))."\");";
+        		echo "$('#rcnt_detail').html('')";//켈린더폼 팝업 초기화
+        		echo "
+				$(\"input:text[numberOnly]\").on(\"keyup\", function() {
+				  $(this).val($(this).val().replace(/[^0-9]/g,\"\"));
+				});
+				$(\".rcnt_price\").keyup(function(e){
+					if(e.keyCode == 13) {
+						var name = $(this).attr(\"name\");
+						var name_arr = name.split(\"_\");
+						admin.room_count_detail_change(name_arr[2], name_arr[3], 'price');
+					}
+				})";
+				echo "
+				$(\".rcnt_cnt\").keyup(function(e){
+					if(e.keyCode == 13) {
+						var name = $(this).attr(\"name\");
+						var name_arr = name.split(\"_\");
+						admin.room_count_detail_change(name_arr[2], name_arr[3], 'cnt');
+					}
+				})";
         		echo "</script>";
 
 			}
@@ -289,6 +320,7 @@
 
 			echo "<script type=\"text/javascript\">";
 			echo "$('#rcnt_detail').html('".$out."');";
+			echo "$('#room_table_data').html('')";//테이블폼 초기화
 			echo "
 			$(\"input:text[numberOnly]\").on(\"keyup\", function() {
 			  $(this).val($(this).val().replace(/[^0-9]/g,\"\"));
@@ -352,6 +384,25 @@
 			}
 			echo "<script type=\"text/javascript\">";
 			echo $out;
+			echo "
+			$(\"input:text[numberOnly]\").on(\"keyup\", function() {
+			  $(this).val($(this).val().replace(/[^0-9]/g,\"\"));
+			});
+			$(\".rcnt_price\").keyup(function(e){
+				if(e.keyCode == 13) {
+					var name = $(this).attr(\"name\");
+					var name_arr = name.split(\"_\");
+					admin.room_count_detail_change(name_arr[2], name_arr[3], 'price');
+				}
+			})";
+			echo "
+			$(\".rcnt_cnt\").keyup(function(e){
+				if(e.keyCode == 13) {
+					var name = $(this).attr(\"name\");
+					var name_arr = name.split(\"_\");
+					admin.room_count_detail_change(name_arr[2], name_arr[3], 'cnt');
+				}
+			})";
 			echo "</script>";
 		break;
 	}

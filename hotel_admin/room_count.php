@@ -38,6 +38,7 @@
         	#room_count_detail .mdi {cursor:pointer}
         	#rcnt_detail input {float:left;}
         	.rcnt_lable {float:left;clear:both;margin:10px 0;}
+        	#room_table_data i {font-size:30px;color:black;text-align:center;}
         </style>
 		<!-- partial -->
 		<form name="room_count_form">
@@ -93,7 +94,9 @@
                           <tr>
                             <th> Date </th>
                             <th> Room Type </th>
+                            <th> Price </th>
                             <th> Count </th>
+                            <th> Opt </th>
                           </tr>
                         </thead>
                         <tbody id="room_table_data">
