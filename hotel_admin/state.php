@@ -112,12 +112,16 @@
 			$room = array();		//객실 정보 미리뽑기
 			$room_num = array();	//배열 매칭용 객실번호
 			$room_qry = "select * from room where state = 'Y' order by num asc";	//객실정보 미리 불러다 쿼리 최소한 사용하게
-			$room_res = mysqli_query($dbconn, $room_qry);
-			while($room_row = mysqli_fetch_array($room_res)) {
+			//$room_res = mysqli_query($dbconn, $room_qry);
+			$_room = $util->room_arr("Y");
+			$room = $_room["room"];
+			$room_num = $_room["sub"];
+
+			/*while($room_row = mysqli_fetch_array($room_res)) {
 				$room[$room_row["num"]]["name"] = $room_row["name"];
 				$room[$room_row["num"]]["img"] = $room_row["img"];
 				$room_num[] = $room_row["num"];
-			}
+			}*/
 			$data = array();
     		for($sdate; $sdate<=$edate; $sdate = date("Y-m-d", strtotime($sdate." +1 days"))) { //reserve_check에 비어있는날 있을수있으니 초기화
     			$data[$sdate] = array();
@@ -146,7 +150,11 @@
         			$show_room = "";
         			$today_room = count($data[$sdate]);
         			for($t=0; $t<$today_room; $t++) {
-        				$show_room .= "<br/>".$data[$sdate][$t]["name"]." - ".$data[$sdate][$t]["cnt"];
+        				if($data[$sdate][$t]["cnt"] <= 3) {
+        					$show_room .= "<br/><c class='warning_color'>".$data[$sdate][$t]["name"]." - ".$data[$sdate][$t]["cnt"]."</c>";
+        				} else {
+        					$show_room .= "<br/>".$data[$sdate][$t]["name"]." - ".$data[$sdate][$t]["cnt"];
+        				}
         			}
 
         			$yoile = date("w", strtotime($sdate));
@@ -161,6 +169,7 @@
         					$class = "";
         				break;
         			}
+        			$complete = ($sdate < date("Y-m-d")) ? " complete" : "";
         			if($_sdate == $sdate) { //첫날 요일잡아주기
         				for($i=0;$i<=$yoile; $i++) {
         					switch($i) {
@@ -175,12 +184,12 @@
                 				break;
                 			}
                 			if($i!=$yoile) { //첫날이 토욜이면 class안들어가 예외처리
-        						$out .= "<td class='".$class."'></td>";
+        						$out .= "<td class='".$class."".$complete."'></td>";
         					}
         				}
-        				$out .= "<td class='".$class."' onclick='admin.room_count_detail(\\\"".$sdate."\\\");'><b>".$sdate."</b>".$show_room."</td>";
+        				$out .= "<td class='".$class."".$complete."' onclick='admin.room_count_detail(\\\"".$sdate."\\\");'><b>".$sdate."</b>".$show_room."</td>";
         			} else {
-        				$out .= "<td class='".$class."' onclick='admin.room_count_detail(\\\"".$sdate."\\\");'><b>".$sdate."</b>".$show_room."</td>";
+        				$out .= "<td class='".$class."".$complete."' onclick='admin.room_count_detail(\\\"".$sdate."\\\");'><b>".$sdate."</b>".$show_room."</td>";
         			}
         			if($yoile == 6) {
         				$out .= "</tr><tr>";
@@ -219,7 +228,7 @@
         					$class = "";
         				break;
         			}
-
+        			
         			$out .= "<tr class='".$class."'>";
         			$show_room = "";
         			//$today_room = count($data[$sdate]);	//객실수량 조절을 위해 전체객실로 변경
@@ -229,7 +238,11 @@
         				$out .= "<td colspan='2'></td>";
         			}
         			for($t=0; $t<$today_room; $t++) {
-        				$out .= "<td>";
+        				if($data[$sdate][$t]["cnt"] <= 3 && $data[$sdate][$t]["cnt"]!="") {
+        					$out .= "<td class='warning_color'>";
+        				} else {
+        					$out .= "<td>";
+        				}
         				$out .= $room[$room_num[$t]]["name"];
         				$out .= "</td>";
         				$out .= "<td>";
@@ -281,7 +294,11 @@
 		case "room_count_detail":	//객실수량 div
 			$room = array();		//객실 정보 미리뽑기
 			$room_num = array();	//배열 매칭용 객실번호
+			$_room = $util->room_arr("Y");
+			$room = $_room["room"];
+			$room_num = $_room["sub"];
 			$room_qry = "select * from room where 1=1 and state = 'Y'";
+			/*
 			$room_res = mysqli_query($dbconn, $room_qry);
 			while($room_row = mysqli_fetch_array($room_res)) {
 				$room[$room_row["num"]]["name"] = $room_row["name"];
@@ -289,7 +306,7 @@
 				$room[$room_row["num"]]["cnt"] = 0;
 				$room[$room_row["num"]]["price"] = 0;
 				$room_num[] = $room_row["num"];
-			}
+			}*/
 			$reserve_qry = "select * from reserve_check where 1=1 and ";
 			$reserve_qry .= " date = '".$date."'";	//해당일자의 객실 수량만 뽑아오기
 			$reserve_res = mysqli_query($dbconn, $reserve_qry);
@@ -404,6 +421,10 @@
 				}
 			})";
 			echo "</script>";
+		break;
+		case "reserve_state":
+			$qry = "update reserve set state = '".$state."' where num = '".$num."'";
+			$res = mysqli_query($dbconn, $qry);
 		break;
 	}
 ?>

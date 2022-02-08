@@ -21144,3 +21144,30 @@ div.tagsinput {
     width:100%;
     padding:0 2.5rem;
 }
+.pointer {
+    cursor:pointer;
+}
+
+/*room_count*/
+.table-bordered th {text-align:center;}
+.table-bordered .center {text-align:center;}
+.table-bordered .red {background-color:#FFCBCB;}
+.table-bordered .blue {background-color:#C4DEFF;}
+.calender td {line-height:35px;height:150px;}
+.table-bordered b {text-align:center;}
+.top_title {text-align:center;margin-left:35%;width:30%;}
+.top_title i {color:black;/*font-size:35px;*/}
+.max-width80 {max-width:80%}
+.max-width50 {max-width:50%}
+.max-width30 {max-width:30%}
+.max-width20 {max-width:20%}
+.margin-left10 {margin-left:10px;}
+#room_count_detail i {font-size:35px;color:black;/*float:right;clear:both;*/}
+#room_count_detail .mdi {cursor:pointer}
+#rcnt_detail input {float:left;}
+.rcnt_lable {float:left;clear:both;margin:10px 0;}
+#room_table_data i {font-size:30px;color:black;text-align:center;}
+.table-responsive .complete {
+    text-decoration: line-through;
+}
+.warning_color {color:#FF9595}
