@@ -75,6 +75,30 @@ var admin = {
 	room_count_page : function(type) {
 		$("input[name='type']").val(type);
 		admin.form_ajax("room_count_form", "html");
+	},
+	room_count_detail : function(date) {
+		$("#room_count_detail").show();
+		$.ajax({
+			type : "POST",
+			data : {"mode":"room_count_detail", "date":date},
+			url  : "state.php",
+			success : function(e) {
+				$("#rcnt_detail").html(e);
+			}
+		})
+	},
+	room_count_detail_change : function(date,num,type) {
+		var price = "rcnt_price_"+date+"_"+num;
+		var cnt = "rcnt_cnt_"+date+"_"+num;
+
+		$.ajax({
+			type : "POST",
+			data : {"mode":"room_count_detail_change", "date":date, "type":type, "num":num, "cnt":$("input[name='"+cnt+"']").val(), "price":$("input[name='"+price+"']").val()},
+			url  : "state.php",
+			success : function(e) {
+				$("#script").html(e);
+			}
+		})
 	}
 }
 $("input[name='password']").keyup(function(e){

@@ -29,6 +29,15 @@
         	.table-bordered b {text-align:center;}
         	.top_title {text-align:center;margin-left:35%;width:30%;}
         	.top_title i {color:black;/*font-size:35px;*/}
+        	.max-width80 {max-width:80%}
+        	.max-width50 {max-width:50%}
+        	.max-width30 {max-width:30%}
+        	.max-width20 {max-width:20%}
+        	.margin-left10 {margin-left:10px;}
+        	#room_count_detail i {font-size:35px;color:black;/*float:right;clear:both;*/}
+        	#room_count_detail .mdi {cursor:pointer}
+        	#rcnt_detail input {float:left;}
+        	.rcnt_lable {float:left;clear:both;margin:10px 0;}
         </style>
 		<!-- partial -->
 		<form name="room_count_form">
@@ -112,6 +121,127 @@
       </div>
       <!-- page-body-wrapper ends -->
     </div>
+    <div id="Mask"></div>
+        <script type="text/javascript">
+            function star(num) {
+                $(".review_star").removeClass("fa-star-o");
+                $(".review_star").removeClass("fa-star");
+                $("input[name='star']").val(num);
+                for(i=0; i<5; i++){
+                    if(i<num) {
+                        $(".review_star").eq(i).addClass("fa-star");
+                    } else {
+                        $(".review_star").eq(i).addClass("fa-star-o");
+                    }
+                }
+            }
+        </script>
+        <!--  pop   -->
+        <style type="text/css">
+        	.rcnt_detail_button {
+        		float:right;/*width:90%*/;position:absolute;margin-left:75%;
+        	}
+        	.rcnt_detail_button i {
+        		float:right;
+        	}
+        </style>
+        <div id="room_count_detail" class="pop-wrap">
+            <div class="pop-layer">
+            <div class="close">x</div>
+                <div>
+                	<div class="col-md-6 grid-margin stretch-card" style="max-width:100%;text-align:left">
+						<div class="card">
+							<div class="card-body" id="rcnt_detail">
+								<h4 class="card-title"><?=date("Y-m-d")?></h4>
+								<div class="form-group">
+									<input type="text" class="form-control max-width80" value="서울 더블 디럭스 룸 - 10" aria-label="Username">
+									<div class="rcnt_detail_button" style="top:60px;">
+										<i class="mdi mdi-arrow-down-drop-circle"></i>
+										<i class="mdi mdi-arrow-up-drop-circle" onclick="admin.room_count_detail_change()"></i> 
+									</div>
+								</div>
+								<div class="form-group">
+									<input type="text" class="form-control max-width80" value="서울 더블 디럭스 룸 - 10" aria-label="Username">
+									<div class="rcnt_detail_button" style="top:115px;">
+										<i class="mdi mdi-arrow-up-drop-circle" onclick="admin.room_count_detail_change()"></i> 
+										<i class="mdi mdi-arrow-down-drop-circle"></i>
+									</div>
+								</div>
+								<div class="form-group">
+									<input type="text" class="form-control max-width80" value="서울 더블 디럭스 룸 - 10" aria-label="Username">
+									<div class="rcnt_detail_button" style="top:170px;">
+										<i class="mdi mdi-arrow-up-drop-circle" onclick="admin.room_count_detail_change()"></i> 
+										<i class="mdi mdi-arrow-down-drop-circle"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+                </div>
+            </div>
+        </div>
+        <!--  //pop -->
+        <style type="text/css">
+        	.rcnt_detail_table {
+        		color:black;
+        	}
+        	.rcnt_detail_table i {
+        		font-size:30px;
+        	}
+        	#Mask{
+			  display: none;
+			  position:fixed;
+			  top: 0;
+			  left: 0;
+			  width: 100%;
+			  height: 100%;
+			  background:#000;
+			  opacity:.3; 
+			  filter:alpha(opacity:30);
+			  z-index: 150;
+			}
+			.pop-wrap {
+			    display: none;
+			    position: fixed;
+			    left: 0;
+			    right: 0;
+			    top: 0;
+			    bottom: 0;
+			    text-align: center;
+			    background-color: rgba(0, 0, 0, 0.5);
+			  z-index:9999;
+			}
+			.pop-wrap:before {
+			    content: "";
+			    display: inline-block;
+			    height: 100%;
+			    vertical-align: middle;
+			    margin-right: -.25em;
+			}
+			.pop-layer {
+			    display: inline-block;
+			    position:relative;
+			    vertical-align: middle;
+			    width: 500px;
+			    padding:20px;
+			    background-color: #fff;
+			    z-index: 10;
+			}
+			.pop-wrap .close{
+			  position:absolute;
+			  top:10px;
+			  right:10px;
+			  cursor:pointer;
+			}
+			@media (max-width: 767px) {
+			  .pop-wrap:before {
+			    height: 0;
+			  } 
+			  .pop-layer {
+			    width:auto;
+			  }
+			}
+        </style>
 <?php
 	include "./common/bottom.php";
 ?>
@@ -119,4 +249,7 @@
 	$(document).ready(function(){
 		admin.form_ajax("room_count_form", "html");
 	})
+	$("#room_count_detail .close").click(function(){
+		$("#room_count_detail").hide();
+	});
 </script>

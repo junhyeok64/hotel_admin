@@ -40,7 +40,7 @@
 				echo "FAIL||";
 			}
 		break;
-		case "todo_change":
+		case "todo_change":	//todolist 상태값 변경
 			$qry = "";
 			switch($type) {
 				case "check":
@@ -57,14 +57,14 @@
 				$res = mysqli_query($dbconn, $qry);
 			}
 		break;
-		case "todo_paging":
+		case "todo_paging":	//todolist paging
 			if($type != "") {
 				$page = ($type == "next") ? $page+1 : $page-1;
 				$page = ($page < 0) ? 1 : $page;
 			}
 			$start = ($page-1)*5;
 			$limit = 5;
-			$todo_qry = "select * from todo where state='Y' order by `check`='N' desc ,num desc";
+			$todo_qry = "select * from todo where state='Y' order by `check`='N' desc ,num desc";	//complete한건 뒤로 깔리게, 삭제한건 노출 안되게
 			$todo_cres = mysqli_query($dbconn, $todo_qry);
 			$todo_cnt = @mysqli_num_rows($todo_cres);
 			$todo_qry .= " limit ".$start.",".$limit."";
@@ -91,9 +91,6 @@
 			echo $out;
 		break;
 		case "room_count":
-			/*
-			sdate edate type 
-			*/
 			switch($type) {
 				case "prev":	//전월
 					$sdate = date("Y-m-d", strtotime($sdate." -1 months"));
@@ -110,17 +107,17 @@
 				break;
 			}
 
-			$_sdate = $sdate;
+			$_sdate = $sdate;	//초기화용 함수 따로 빼주기
 			$_edate = $edate;
 			$room = array();
-			$room_qry = "select * from room where state = 'Y' order by num asc";
+			$room_qry = "select * from room where state = 'Y' order by num asc";	//객실정보 미리 불러다 쿼리 최소한 사용하게
 			$room_res = mysqli_query($dbconn, $room_qry);
 			while($room_row = mysqli_fetch_array($room_res)) {
 				$room[$room_row["num"]]["name"] = $room_row["name"];
 				$room[$room_row["num"]]["img"] = $room_row["img"];
 			}
 			$data = array();
-    		for($sdate; $sdate<=$edate; $sdate = date("Y-m-d", strtotime($sdate." +1 days"))) {
+    		for($sdate; $sdate<=$edate; $sdate = date("Y-m-d", strtotime($sdate." +1 days"))) { //reserve_check에 비어있는날 있을수있으니 초기화
     			$data[$sdate] = array();
     		}
     		$cnt_qry = "select * from reserve_check where 1=1 and date >= '".$_sdate."' and date <= '".$_edate."'";
@@ -137,7 +134,7 @@
     			$i++; $prev_date = $cnt_row["date"];
     		}
 
-			if($show_type == "calender") {
+			if($show_type == "calender") {	//달력형태로 출력
 				$out = "<tr>";
         		$sdate = $_sdate; //리필
 
@@ -174,13 +171,13 @@
                 					$class = "";
                 				break;
                 			}
-                			if($i!=$yoile) {
+                			if($i!=$yoile) { //첫날이 토욜이면 class안들어가 예외처리
         						$out .= "<td class='".$class."'></td>";
         					}
         				}
-        				$out .= "<td class='".$class."'><b>".$sdate."</b>".$show_room."</td>";
+        				$out .= "<td class='".$class."' onclick='admin.room_count_detail(\\\"".$sdate."\\\");'><b>".$sdate."</b>".$show_room."</td>";
         			} else {
-        				$out .= "<td class='".$class."'><b>".$sdate."</b>".$show_room."</td>";
+        				$out .= "<td class='".$class."' onclick='admin.room_count_detail(\\\"".$sdate."\\\");'><b>".$sdate."</b>".$show_room."</td>";
         			}
         			if($yoile == 6) {
         				$out .= "</tr><tr>";
@@ -188,7 +185,7 @@
         		}
         		
         		$edate_yolie = date("w", strtotime($edate));
-        		for($edate_yolie; $edate_yolie<6; $edate_yolie++) {
+        		for($edate_yolie; $edate_yolie<6; $edate_yolie++) { //끝날 이후도 틀 잡아주기
         			$out .= "<td></td>";
         		}
         		$out .= "</tr>";
@@ -202,7 +199,7 @@
         		echo "$('.top_title_text').html(\"".date("Y-m", strtotime($_sdate))."\");";
         		echo "</script>";
 
-			} else if ($show_type == "table") {
+			} else if ($show_type == "table") {	//테이블 형태로 출력
 				$out = "";
 				$sdate = $_sdate; //리필
 
@@ -228,7 +225,6 @@
         				$out .= "<td colspan='2'></td>";
         			}
         			for($t=0; $t<$today_room; $t++) {
-        				//$show_room .= "<br/>".$data[$sdate][$t]["name"]." - ".$data[$sdate][$t]["cnt"];
         				$out .= "<td>";
         				$out .= $data[$sdate][$t]["name"];
         				$out .= "</td>";
@@ -250,6 +246,113 @@
         		echo "</script>";
 
 			}
+		break;
+		case "room_count_detail":	//객실수량 div
+			$room = array();		//객실 정보 미리뽑기
+			$room_num = array();	//배열 매칭용 객실번호
+			$room_qry = "select * from room where 1=1 and state = 'Y'";
+			$room_res = mysqli_query($dbconn, $room_qry);
+			while($room_row = mysqli_fetch_array($room_res)) {
+				$room[$room_row["num"]]["name"] = $room_row["name"];
+				$room[$room_row["num"]]["room_type"] = $room_row["num"];
+				$room[$room_row["num"]]["cnt"] = 0;
+				$room[$room_row["num"]]["price"] = 0;
+				$room_num[] = $room_row["num"];
+			}
+			$reserve_qry = "select * from reserve_check where 1=1 and ";
+			$reserve_qry .= " date = '".$date."'";	//해당일자의 객실 수량만 뽑아오기
+			$reserve_res = mysqli_query($dbconn, $reserve_qry);
+			while($reserve_row = @mysqli_fetch_array($reserve_res)) {
+				$room[$reserve_row["room_type"]]["cnt"] = $reserve_row["cnt"];
+				$room[$reserve_row["room_type"]]["price"] = $reserve_row["price"];
+			}
+
+			$out = "<h4 class=\"card-title\">".$date."</h4>";
+			for($r=0; $r<count($room); $r++) {
+				$_r = $r+1;	//높이계산용
+				//$top = (83*$_r) - ($_r*$_r);
+				$top = 95+(70*($_r-1))+$_r;
+				$out .= "<div class=\"form-group\">";
+				$out .= "<label class=\"rcnt_lable\">".$room[$room_num[$r]]["name"]."</label>";
+				$out .= "<div style=\"clear:both;\">";
+				$out .= "<input type=\"text\" name=\"rcnt_price_".$date."_".$room[$room_num[$r]]["room_type"]."\" class=\"rcnt_price form-control max-width50\" value=\"".$room[$room_num[$r]]["price"]."\" numberOnly>";
+				$out .= "<input type=\"text\" name=\"rcnt_cnt_".$date."_".$room[$room_num[$r]]["room_type"]."\" class=\"rcnt_cnt form-control max-width30 margin-left10\" value=\"".$room[$room_num[$r]]["cnt"]."\" numberOnly>";
+				$out .= "</div>";
+				$out .= "<div class=\"rcnt_detail_button\" style=\"top:".$top."px;\">";
+				$out .= "<i class=\"mdi mdi-arrow-down-drop-circle\" onclick=\"admin.room_count_detail_change(\'".$date."\', \'".$room[$room_num[$r]]["room_type"]."\', \'down\')\"></i>";
+				$out .= "<i class=\"mdi mdi-arrow-up-drop-circle\" onclick=\"admin.room_count_detail_change(\'".$date."\', \'".$room[$room_num[$r]]["room_type"]."\', \'up\')\"></i>";
+				$out .= "</div>";
+				$out .= "</div>";
+			}
+
+			$out .= "</div>";
+
+			echo "<script type=\"text/javascript\">";
+			echo "$('#rcnt_detail').html('".$out."');";
+			echo "
+			$(\"input:text[numberOnly]\").on(\"keyup\", function() {
+			  $(this).val($(this).val().replace(/[^0-9]/g,\"\"));
+			});
+			$(\".rcnt_price\").keyup(function(e){
+				if(e.keyCode == 13) {
+					var name = $(this).attr(\"name\");
+					var name_arr = name.split(\"_\");
+					admin.room_count_detail_change(name_arr[2], name_arr[3], 'price');
+				}
+			})";
+			echo "
+			$(\".rcnt_cnt\").keyup(function(e){
+				if(e.keyCode == 13) {
+					var name = $(this).attr(\"name\");
+					var name_arr = name.split(\"_\");
+					admin.room_count_detail_change(name_arr[2], name_arr[3], 'cnt');
+				}
+			})";
+			echo "</script>";
+		break;
+		case "room_count_detail_change":
+			/* date ,type(up/down), num*/
+			switch($type) {
+				case "up":	case "down":
+					$qry = "select num, cnt from reserve_check where room_type = '".$num."' and date = '".$date."'";
+					$res = mysqli_query($dbconn, $qry);
+					$row = @mysqli_fetch_array($res);
+					if($row["num"] > 0) {
+						$state_qry = "update reserve_check set ";
+						$state_qry .= ($type == "down") ? "cnt = cnt-1 " : "cnt = cnt+1 ";
+						$state_qry .= " where num = '".$row["num"]."'";
+					} else {
+						$state_qry = "insert into reserve_check (room_type, date, cnt, price) values ";
+						$state_qry .= "('".$num."', '".$date."', '1', '0')";
+					}
+					$state_res = mysqli_query($dbconn, $state_qry);
+					$show_cnt = ($type == "down") ? $row["cnt"]-1 : $row["cnt"]+1;
+					
+					$out = "$(\"input[name='rcnt_cnt_".$date."_".$num."']\").val('".$show_cnt."');";
+					//$out .= "admin.room_count_detail('".$date."');";
+				break;
+				case "price":
+				case "cnt":
+					$qry = "select num, cnt from reserve_check where room_type = '".$num."' and date = '".$date."'";
+					$res = mysqli_query($dbconn, $qry);
+					$row = @mysqli_fetch_array($res);
+					if($row["num"] > 0) {
+						$state_qry = "update reserve_check set ";
+						$state_qry .= " ".$type." = '".${$type}."'";
+						$state_qry .= " where num = '".$row["num"]."'";
+					} else {
+						$cnt = ($cnt == "") ? "0" : $cnt; 
+						$price = ($cnt == "") ? "0" : $cnt;
+						$state_qry = "insert into reserve_check (room_type, date, cnt, price) values ";
+						$state_qry .= "('".$num."', '".$date."', '".$cnt."', '".$price."')";
+					}
+					$state_res = mysqli_query($dbconn, $state_qry);
+					$out = "$(\"input[name='rcnt_".$type."_".$date."_".$num."']\").val('".${$type}."');";
+				break;
+			}
+			echo "<script type=\"text/javascript\">";
+			echo $out;
+			echo "</script>";
 		break;
 	}
 ?>
