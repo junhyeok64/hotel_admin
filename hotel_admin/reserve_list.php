@@ -9,12 +9,12 @@
       <?php
         //좌측 사이드메뉴 분리
         include "./common/left_menu.php";
-        $_page = empty($_GET["page"]) ? 1 : $_GET["page"];
-        $sdate = $_GET["sdate"];
-        $edate = $_GET["edate"];
-        $keyword = $_GET["keyword"];
-        $keyword_type = $_GET["keyword_type"];
-        $limit = $block = 10;
+        $_page = empty($_GET["page"]) ? 1 : $_GET["page"];  //페이징 
+        $sdate = $_GET["sdate"];  //시작일
+        $edate = $_GET["edate"];  //종료일
+        $keyword = $_GET["keyword"];  //검색어
+        $keyword_type = $_GET["keyword_type"];//검색타입
+        $limit = $block = 10; //리스트노출개수, 페이지블록개수
       ?>
       <!-- partial -->
       <div class="container-fluid page-body-wrapper">
@@ -50,7 +50,7 @@
           							<input type="hidden" name="page" value="<?=$_page?>">
           							<b class="rlist_bar">~</b>
           							<input type="text" class="form-control rlist_edate" name="edate" value="<?=$edate?>" placeholder="Enddate">
-          							<button type="submit" class="btn btn-primary mb-2" style="height:37px;">Submit</button>
+          							<button type="button" onclick="$('input[name=page]').val('1');$('form[name=reserve_form]').submit();" class="btn btn-primary mb-2" style="height:37px;">Submit</button>
 	                    </div>
                     </form>
                     <div class="table-responsive">
