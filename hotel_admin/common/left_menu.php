@@ -3,7 +3,7 @@
           <a class="sidebar-brand brand-logo" href="<?=base_admin?>"><img src="assets/images/logo.svg" alt="logo" /></a>
           <a class="sidebar-brand brand-logo-mini" href="index.html"><img src="assets/images/logo-mini.svg" alt="logo" /></a>
         </div>
-        <ul class="nav">
+        <ul class="nav" style="position:fixed">
           <li class="nav-item profile">
             <div class="profile-desc">
               <div class="profile-pic">
@@ -57,14 +57,37 @@
             <span class="nav-link">Navigation</span>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link" href="<?=base_admin?>">
               <span class="menu-icon">
                 <i class="mdi mdi-speedometer"></i>
               </span>
-              <span class="menu-title">Dashboard</span>
+              <span class="menu-title">Main</span>
             </a>
           </li>
           <li class="nav-item menu-items">
+            <a class="nav-link" href="<?=base_admin?>/room_count.php">
+              <span class="menu-icon">
+                <i class="mdi mdi-table-large"></i>
+              </span>
+              <span class="menu-title">Room Count</span>
+            </a>
+          </li>
+          <li class="nav-item menu-items">
+            <a class="nav-link" data-toggle="collapse" href="#reserve" aria-expanded="false" aria-controls="reserve">
+              <span class="menu-icon">
+                <i class="mdi mdi-chart-bar"></i>
+              </span>
+              <span class="menu-title">Reserve</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="reserve">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="<?=base_admin?>/reserve_list.php">List</a></li>
+                <li class="nav-item"> <a class="nav-link" href="<?=base_admin?>/reserve_chart.php">Chart</a></li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item menu-items hide">
             <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
               <span class="menu-icon">
                 <i class="mdi mdi-laptop"></i>
@@ -80,7 +103,7 @@
               </ul>
             </div>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items hide">
             <a class="nav-link" href="pages/forms/basic_elements.html">
               <span class="menu-icon">
                 <i class="mdi mdi-playlist-play"></i>
@@ -88,15 +111,7 @@
               <span class="menu-title">Form Elements</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="pages/tables/basic-table.html">
-              <span class="menu-icon">
-                <i class="mdi mdi-table-large"></i>
-              </span>
-              <span class="menu-title">Tables</span>
-            </a>
-          </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items hide">
             <a class="nav-link" href="pages/charts/chartjs.html">
               <span class="menu-icon">
                 <i class="mdi mdi-chart-bar"></i>
@@ -104,7 +119,7 @@
               <span class="menu-title">Charts</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items hide">
             <a class="nav-link" href="pages/icons/mdi.html">
               <span class="menu-icon">
                 <i class="mdi mdi-contacts"></i>
@@ -112,7 +127,7 @@
               <span class="menu-title">Icons</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items hide">
             <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
               <span class="menu-icon">
                 <i class="mdi mdi-security"></i>
@@ -130,7 +145,7 @@
               </ul>
             </div>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items hide">
             <a class="nav-link" href="http://www.bootstrapdash.com/demo/corona-free/jquery/documentation/documentation.html">
               <span class="menu-icon">
                 <i class="mdi mdi-file-document-box"></i>

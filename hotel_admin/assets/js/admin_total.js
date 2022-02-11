@@ -99,6 +99,57 @@ var admin = {
 				$("#script").html(e);
 			}
 		})
+	},
+	rchart_date : function(type) {
+		var url_tail = "";
+		switch(type) {
+			case "day":
+			case "month":
+			case "year":
+				url_tail = "&date_type="+type;
+			break;
+			case "chart": case "table":
+				$("input[name='chart_type']").val(type);
+				$("form[name='reserve_form']").submit();
+				return false;
+			break;
+		}
+		location.href="./reserve_chart.php?1=1"+url_tail;
+	},
+	reserve_state : function(num, state, index) {
+		$.ajax({
+			type : "POST",
+			data : {"mode":"reserve_state", "num":num, "state":state},
+			url : "state.php",
+			success : function(e) {
+				var color = "";
+				switch(state) {
+					case "Y":
+						color = "00d25b";
+					break;
+					case "S": case "E":
+						color = "8f5fe8";
+					break;
+					case "C":
+						color = "fc424a";
+					break;
+					case "T":
+						color = "ffab00";
+					break;
+					default:
+						color = "e4eaec";
+					break;
+				}
+				$(".select2-selection__rendered").eq(index).css("color","#"+color);
+			}
+		})
+	},
+	reserve_page : function(page) {
+		$("input[name='page']").val(page);
+		$("form[name='reserve_form']").submit();
+	},
+	reserve_main : function(num) {
+		location.href="./reserve_list.php?keyword_type=num&keyword="+num;
 	}
 }
 $("input[name='password']").keyup(function(e){

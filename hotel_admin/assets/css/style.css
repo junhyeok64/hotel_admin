@@ -21171,3 +21171,34 @@ div.tagsinput {
     text-decoration: line-through;
 }
 .warning_color {color:#FF9595}
+
+/*main*/
+.reserve_main .table-responsive{overflow-x:hidden;}
+
+/*reserve_list, chart*/
+.rlist_keyword {width:25%;float:left;margin-right:10px;}
+.rlist_sdate {width:120px;float:left;}
+.rlist_edate {width:120px;float:left;margin-right:10px;}
+.rlist_bar {margin:0 10px;float:left;}
+.paging {letter-spacing: 8px;}
+.reserve_page .select2 {float:left;margin-right:10px;}
+.reserve_page .table-responsive{overflow-x:hidden;}
+
+/*reserve_chart*/
+#reserve_chart td{ text-align:right; }
+.reserve_chart_div th{ text-align:center; }
+#reserve_chart .center{ text-align:center; }
+#reserve_chart .table th, .jsgrid .jsgrid-table th, .table td, .jsgrid .jsgrid-table td {
+  border-right: 1px solid #2c2e33;
+}
+#reserve_chart .bold {font-weight:500;font-size:25px;opacity:0.5;background-color:#030303;color:white;}
+.rchart_button {margin-bottom:35px;}
+.rchart_button .on {background-color:white;color:black;}
+.rchart_button button {min-height:40px;}
+.reserve_chart_div .row {display:contents;}
+.reserve_chart_div .show {display:contents;}
+.reserve_chart_div .hide {display:none;}
+.reserve_chart_div .table-responsive {overflow-x:hidden;}
+
+/*total*/
+.hide {display:none;}

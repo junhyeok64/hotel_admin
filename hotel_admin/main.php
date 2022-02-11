@@ -25,6 +25,16 @@
         <?php
           //상단 탑메뉴 분리
           include "./common/sub_top.php";
+
+          //객실 정보 미리 불러다놓고 결제내역 내에서 반복조회 x
+          $room_qry = "select * from room";
+          $room_res = mysqli_query($dbconn, $room_qry);
+          $room = array();
+          while($room_row = mysqli_fetch_array($room_res)) {
+            $room[$room_row["num"]]["name"] = $room_row["name"];
+            $room[$room_row["num"]]["img"] = $room_row["img"];
+          }
+
           //'Y','S','C','T'
           $month_arr  = array();
           $prev_arr   = array();
@@ -187,11 +197,44 @@
                   <div class="card-body">
                     <div class="d-flex flex-row justify-content-between">
                       <h4 class="card-title mb-1">Room Count</h4>
-                      <p class="text-muted mb-1">Your data status</p>
+                      <p class="text-muted mb-1 small pointer" onclick="location.href='<?=base_admin?>/room_count.php'">View all</p>
                     </div>
                     <div class="row">
                       <div class="col-12">
                         <div class="preview-list">
+                          <?php
+                            //객실 수량 없는애들 확인하기
+                            $rcnt_qry = "select * from reserve_check where 1=1";
+                            $rcnt_qry .= " and date >= '".date("Y-m-d")."'";
+                            $rcnt_qry .= " and cnt < 3";
+                            $rcnt_qry .= " order by date asc";
+                            $rcnt_qry .= " limit 0,5";
+                            $rcnt_res = mysqli_query($dbconn, $rcnt_qry);
+                            $rcnt_cnt = @mysqli_num_rows($rcnt_res);
+                            if($rcnt_cnt > 0) {
+                              while($rcnt_row = mysqli_fetch_array($rcnt_res)) {
+                          ?>
+                          <div class="preview-item border-bottom pointer" onclick="location.href='<?=base_admin?>/room_count.php?chk_date=<?=$rcnt_row['date']?>'">
+                            <div class="preview-thumbnail">
+                              <div class="preview-icon bg-primary">
+                                <img src="<?=base_url?>/<?=$room[$rcnt_row["room_type"]]["img"]?>">
+                              </div>
+                            </div>
+                            <div class="preview-item-content d-sm-flex flex-grow">
+                              <div class="flex-grow">
+                                <h6 class="preview-subject"><?=$room[$rcnt_row["room_type"]]["name"]?></h6>
+                                <p class="text-muted mb-0">남은 객실 수량 : <?=$rcnt_row["cnt"]?></p>
+                              </div>
+                              <div class="mr-auto text-sm-right pt-2 pt-sm-0">
+                                <p class="text-muted"><?=$rcnt_row["date"]?></p>
+                                <p class="text-muted mb-0"><?=@number_format($rcnt_row["price"])?></p>
+                              </div>
+                            </div>
+                          </div>
+                          <?php
+                              }
+                            } else {
+                          ?>
                           <div class="preview-item border-bottom">
                             <div class="preview-thumbnail">
                               <div class="preview-icon bg-primary">
@@ -200,83 +243,11 @@
                             </div>
                             <div class="preview-item-content d-sm-flex flex-grow">
                               <div class="flex-grow">
-                                <h6 class="preview-subject">Admin dashboard design</h6>
-                                <p class="text-muted mb-0">Broadcast web app mockup</p>
-                              </div>
-                              <div class="mr-auto text-sm-right pt-2 pt-sm-0">
-                                <p class="text-muted">15 minutes ago</p>
-                                <p class="text-muted mb-0">30 tasks, 5 issues </p>
+                                <h6 class="preview-subject">부족한 객실이 없습니다.</h6>
                               </div>
                             </div>
                           </div>
-                          <div class="preview-item border-bottom">
-                            <div class="preview-thumbnail">
-                              <div class="preview-icon bg-success">
-                                <i class="mdi mdi-cloud-download"></i>
-                              </div>
-                            </div>
-                            <div class="preview-item-content d-sm-flex flex-grow">
-                              <div class="flex-grow">
-                                <h6 class="preview-subject">Wordpress Development</h6>
-                                <p class="text-muted mb-0">Upload new design</p>
-                              </div>
-                              <div class="mr-auto text-sm-right pt-2 pt-sm-0">
-                                <p class="text-muted">1 hour ago</p>
-                                <p class="text-muted mb-0">23 tasks, 5 issues </p>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="preview-item border-bottom">
-                            <div class="preview-thumbnail">
-                              <div class="preview-icon bg-info">
-                                <i class="mdi mdi-clock"></i>
-                              </div>
-                            </div>
-                            <div class="preview-item-content d-sm-flex flex-grow">
-                              <div class="flex-grow">
-                                <h6 class="preview-subject">Project meeting</h6>
-                                <p class="text-muted mb-0">New project discussion</p>
-                              </div>
-                              <div class="mr-auto text-sm-right pt-2 pt-sm-0">
-                                <p class="text-muted">35 minutes ago</p>
-                                <p class="text-muted mb-0">15 tasks, 2 issues</p>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="preview-item border-bottom">
-                            <div class="preview-thumbnail">
-                              <div class="preview-icon bg-danger">
-                                <i class="mdi mdi-email-open"></i>
-                              </div>
-                            </div>
-                            <div class="preview-item-content d-sm-flex flex-grow">
-                              <div class="flex-grow">
-                                <h6 class="preview-subject">Broadcast Mail</h6>
-                                <p class="text-muted mb-0">Sent release details to team</p>
-                              </div>
-                              <div class="mr-auto text-sm-right pt-2 pt-sm-0">
-                                <p class="text-muted">55 minutes ago</p>
-                                <p class="text-muted mb-0">35 tasks, 7 issues </p>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="preview-item">
-                            <div class="preview-thumbnail">
-                              <div class="preview-icon bg-warning">
-                                <i class="mdi mdi-chart-pie"></i>
-                              </div>
-                            </div>
-                            <div class="preview-item-content d-sm-flex flex-grow">
-                              <div class="flex-grow">
-                                <h6 class="preview-subject">UI Design</h6>
-                                <p class="text-muted mb-0">New application planning</p>
-                              </div>
-                              <div class="mr-auto text-sm-right pt-2 pt-sm-0">
-                                <p class="text-muted">50 minutes ago</p>
-                                <p class="text-muted mb-0">27 tasks, 4 issues </p>
-                              </div>
-                            </div>
-                          </div>
+                          <?php } ?>
                         </div>
                       </div>
                     </div>
@@ -284,7 +255,7 @@
                 </div>
               </div>
             </div>
-            <div class="row ">
+            <div class="row reserve_main">
               <div class="col-12 grid-margin">
                 <div class="card">
                   <div class="card-body">
@@ -293,13 +264,13 @@
                       <table class="table">
                         <thead>
                           <tr>
-                            <th>
+                            <!--<th>
                               <div class="form-check form-check-muted m-0">
                                 <label class="form-check-label">
                                   <input type="checkbox" class="form-check-input">
                                 </label>
                               </div>
-                            </th>
+                            </th>-->
                             <th> Booker (Phone) </th>
                             <th> Room Type - (Room_cnt) </th>
                             <th> Room Cost </th>
@@ -311,14 +282,6 @@
                         </thead>
                         <tbody>
                           <?php
-                            //객실 정보 미리 불러다놓고 결제내역 내에서 반복조회 x
-                            $room_qry = "select * from room";
-                            $room_res = mysqli_query($dbconn, $room_qry);
-                            $room = array();
-                            while($room_row = mysqli_fetch_array($room_res)) {
-                              $room[$room_row["num"]]["name"] = $room_row["name"];
-                              $room[$room_row["num"]]["img"] = $room_row["img"];
-                            }
                             //상위 다섯개만 불러오고 추가적인 결제건들은 리스팅 페이지로 가서 조회하기
                             $reserve_qry = "select * from reserve where 1=1 ";
                             $reserve_qry .= " order by num desc limit 0, 5";
@@ -332,7 +295,7 @@
                                   $css_state = " badge-outline-success";
                                 break;
                                 case "S":
-                                  $show_state = "예약확정";
+                                  $show_state = "예약완료";
                                   $css_state = " badge-outline-info";
                                 break;
                                 case "E":
@@ -353,14 +316,14 @@
                                 break;
                               }
                           ?>
-                          <tr>
-                            <td>
+                          <tr style="cursor:pointer;" onclick="admin.reserve_main('<?=$reserve_row['num']?>');">
+                            <!--<td>
                               <div class="form-check form-check-muted m-0">
                                 <label class="form-check-label">
                                   <input type="checkbox" class="form-check-input">
                                 </label>
                               </div>
-                            </td>
+                            </td>-->
                             <td>
                               <!--<img src="assets/images/faces/face1.jpg" alt="image" />-->
                               <span class="pl-2"><?=$reserve_row["reserve_name"]?> (<?=$reserve_row["phone"]?>)</span>

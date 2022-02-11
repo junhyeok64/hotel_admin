@@ -4,14 +4,6 @@
 	<script type="text/javascript">
 		var page = "reserve_list";
 	</script>
-	<style type="text/css">
-		.rlist_keyword {width:25%;float:left;margin-right:10px;}
-		.rlist_sdate {width:100px;float:left;}
-		.rlist_edate {width:100px;float:left;margin-right:10px;}
-		.rlist_bar {margin:0 10px;float:left;}
-		.paging {letter-spacing: 8px;}
-		#reserve_list .select2-selection {}
-	</style>
 	<div class="container-scroller">
       <!-- partial:partials/_sidebar.html -->
       <?php
@@ -31,9 +23,6 @@
 		//상단 탑메뉴 분리
 		include "./common/sub_top.php";
 		?>
-		<style type="text/css">
-			.reserve_page .select2 {float:left;margin-right:10px;}
-		</style>
 		 <!-- partial -->
         <div class="main-panel reserve_page">
           <div class="content-wrapper">
@@ -135,7 +124,7 @@
 								<td><?=date("Y-m-d", strtotime($row["edate"]))?></td>
 								<td><?=date("Y-m-d H:i:s", strtotime($row["reserve_time"]))?></td>
 								<td>
-									<select name="keyword_type" class="js-example-basic-single" onchange="reserve_state('<?=$row['num']?>',this.value, '<?=$i?>')" style="width:80%">
+									<select name="keyword_type" class="js-example-basic-single" onchange="admin.reserve_state('<?=$row['num']?>',this.value, '<?=$i?>')" style="width:80%">
 										<option  class="badge-outline-success" value="Y" <?php if($row["state"] == "Y") { echo "selected"; } ?>>예약확인</option>
 										<option value="E" <?php if($row["state"] == "E") { echo "selected"; } ?>>투숙완료</option>
 										<option value="S" <?php if($row["state"] == "S") { echo "selected"; } ?>>예약완료</option>
@@ -160,17 +149,17 @@
                       <dir>
                       	<center class="paging">
                       		<p>
-                      			<a href="javascript:reserve_page('1');"><<</a>
+                      			<a href="javascript:admin.reserve_page('1');"><<</a>
                       		<?php
                       			for($p=1; $p<=$total_page; $p++) {
                       				if($p == $_page) {
                       					echo "<b>".$p."</b>";
                       				} else {
-                      					echo "<a href=\"javascript:reserve_page('".$p."');\">".$p."</a>";
+                      					echo "<a href=\"javascript:admin.reserve_page('".$p."');\">".$p."</a>";
                       				}
                       			}
                       		?>
-                      			<a href="javascript:reserve_page('<?=$total_page?>');">>></a>
+                      			<a href="javascript:admin.reserve_page('<?=$total_page?>');">>></a>
                       		</p>
                       	</center>
                       </dir>
@@ -193,38 +182,6 @@
 	include "./common/bottom.php";
 ?>
 <script type="text/javascript">
-	function reserve_state(num, state, index) {
-		$.ajax({
-			type : "POST",
-			data : {"mode":"reserve_state", "num":num, "state":state},
-			url : "state.php",
-			success : function(e) {
-				var color = "";
-				switch(state) {
-					case "Y":
-						color = "00d25b";
-					break;
-					case "S": case "E":
-						color = "8f5fe8";
-					break;
-					case "C":
-						color = "fc424a";
-					break;
-					case "T":
-						color = "ffab00";
-					break;
-					default:
-						color = "e4eaec";
-					break;
-				}
-				$(".select2-selection__rendered").eq(index).css("color","#"+color);
-			}
-		})
-	}
-	function reserve_page(page) {
-		$("input[name='page']").val(page);
-		$("form[name='reserve_form']").submit();
-	}
 	$(document).ready(function(){
 		<?php
 		//페이지 로드 됐을때 color잡아주기
