@@ -38,19 +38,19 @@
                     <h4 class="card-title">Reserve List</h4>
                     <form name="reserve_form">
 	                    <div class="form-group">                   	
-							<select name="keyword_type" class="js-example-basic-single" style="width:15%;float:left;">
-								<option value="num" <?php if($select == "num") { echo "selected"; } ?>>Order Num</option>
-								<option value="reserve_name" <?php if($select == "reserve_name") { echo "selected"; } ?>>Booker</option>
-								<option value="phone" <?php if($select == "phone") { echo "selected"; } ?>>Phone</option>
-								<option value="price" <?php if($select == "price") { echo "selected"; } ?>>Price</option>
-								<option value="reserve_time" <?php if($select == "date") { echo "selected"; } ?>>Pay Date</option>
-							</select>
-							<input type="text" class="form-control rlist_keyword" name="keyword" value="<?=$keyword?>" placeholder="Keyword" >
-							<input type="text" class="form-control rlist_sdate" name="sdate" value="<?=$sdate?>" placeholder="Stardate" >
-							<input type="hidden" name="page" value="<?=$_page?>">
-							<b class="rlist_bar">~</b>
-							<input type="text" class="form-control rlist_edate" name="edate" value="<?=$edate?>" placeholder="Enddate">
-							<button type="submit" class="btn btn-primary mb-2" style="height:37px;">Submit</button>
+          							<select name="keyword_type" class="js-example-basic-single" style="width:15%;float:left;">
+          								<option value="num" <?php if($select == "num") { echo "selected"; } ?>>Order Num</option>
+          								<option value="reserve_name" <?php if($select == "reserve_name") { echo "selected"; } ?>>Booker</option>
+          								<option value="phone" <?php if($select == "phone") { echo "selected"; } ?>>Phone</option>
+          								<option value="price" <?php if($select == "price") { echo "selected"; } ?>>Price</option>
+          								<option value="reserve_time" <?php if($select == "date") { echo "selected"; } ?>>Pay Date</option>
+          							</select>
+          							<input type="text" class="form-control rlist_keyword" name="keyword" value="<?=$keyword?>" placeholder="Keyword" >
+          							<input type="text" class="form-control rlist_sdate" name="sdate" value="<?=$sdate?>" placeholder="Stardate" >
+          							<input type="hidden" name="page" value="<?=$_page?>">
+          							<b class="rlist_bar">~</b>
+          							<input type="text" class="form-control rlist_edate" name="edate" value="<?=$edate?>" placeholder="Enddate">
+          							<button type="submit" class="btn btn-primary mb-2" style="height:37px;">Submit</button>
 	                    </div>
                     </form>
                     <div class="table-responsive">
@@ -114,36 +114,36 @@
                         				//'Y','S','C','T','E'
                         	?>
                         	<input type="hidden" name="eq" value="<?=$i?>">
-							<tr>
-								<td><?=$row["num"]?></td>
-								<td><?=$row["reserve_name"]?> ( <?=$row["phone"]?> )</td>
-								<td><?=$room[$row["room_type"]]["name"]?> - ( <?=$row["room_cnt"]?> )</td>
-								<td><?=won?> <?=@number_format($row["price"])?></td>
-								<td><?=$util->date_diff($row["sdate"], $row["edate"])?></td>
-								<td><?=date("Y-m-d", strtotime($row["sdate"]))?></td>
-								<td><?=date("Y-m-d", strtotime($row["edate"]))?></td>
-								<td><?=date("Y-m-d H:i:s", strtotime($row["reserve_time"]))?></td>
-								<td>
-									<select name="keyword_type" class="js-example-basic-single" onchange="admin.reserve_state('<?=$row['num']?>',this.value, '<?=$i?>')" style="width:80%">
-										<option  class="badge-outline-success" value="Y" <?php if($row["state"] == "Y") { echo "selected"; } ?>>예약확인</option>
-										<option value="E" <?php if($row["state"] == "E") { echo "selected"; } ?>>투숙완료</option>
-										<option value="S" <?php if($row["state"] == "S") { echo "selected"; } ?>>예약완료</option>
-										<option value="C" <?php if($row["state"] == "C") { echo "selected"; } ?>>예약취소</option>
-										<option value="T" <?php if($row["state"] == "T") { echo "selected"; } ?>>결제시도</option>
-									</select>
-								</td>
-							</tr>
-							<?php
-									$i++;
-									}
-								} else {
-							?>
-							<tr>
-								<td colspan="7">일치하는 결제건이 없습니다.</td>
-							</tr>
-							<?php
-								}
-							?>
+            							<tr>
+            								<td><?=$row["num"]?></td>
+            								<td><?=$row["reserve_name"]?> ( <?=$row["phone"]?> )</td>
+            								<td><?=$room[$row["room_type"]]["name"]?> - ( <?=$row["room_cnt"]?> )</td>
+            								<td><?=won?> <?=@number_format($row["price"])?></td>
+            								<td><?=$util->date_diff($row["sdate"], $row["edate"])?></td>
+            								<td><?=date("Y-m-d", strtotime($row["sdate"]))?></td>
+            								<td><?=date("Y-m-d", strtotime($row["edate"]))?></td>
+            								<td><?=date("Y-m-d H:i:s", strtotime($row["reserve_time"]))?></td>
+            								<td>
+            									<select name="keyword_type" class="js-example-basic-single" onchange="admin.reserve_state('<?=$row['num']?>',this.value, '<?=$i?>')" style="width:80%">
+            										<option  class="badge-outline-success" value="Y" <?php if($row["state"] == "Y") { echo "selected"; } ?>>예약확인</option>
+            										<option value="E" <?php if($row["state"] == "E") { echo "selected"; } ?>>투숙완료</option>
+            										<option value="S" <?php if($row["state"] == "S") { echo "selected"; } ?>>예약완료</option>
+            										<option value="C" <?php if($row["state"] == "C") { echo "selected"; } ?>>예약취소</option>
+            										<option value="T" <?php if($row["state"] == "T") { echo "selected"; } ?>>결제시도</option>
+            									</select>
+            								</td>
+            							</tr>
+            							<?php
+            									$i++;
+            									}
+            								} else {
+            							?>
+            							<tr>
+            								<td colspan="7">일치하는 결제건이 없습니다.</td>
+            							</tr>
+          							<?php
+          								}
+          							?>
                         </tbody>
                       </table>
                       <dir>
