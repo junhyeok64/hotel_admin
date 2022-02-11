@@ -184,7 +184,7 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		<?php
-		//페이지 로드 됐을때 color잡아주기
+		//페이지 로드 됐을때 color잡아주기 
 			for($s=1; $s<=$sub_cnt; $s++) {
 				switch($data[$s]["state"]) {
 					case "Y":
