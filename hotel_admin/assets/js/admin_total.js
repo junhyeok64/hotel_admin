@@ -25,6 +25,9 @@ var admin = {
 					case "alert":
 						alert(e);
 					break;
+					case "review":
+						$("#review").html(e);
+					break;
 				}
 
 			}
@@ -150,6 +153,27 @@ var admin = {
 	},
 	reserve_main : function(num) {
 		location.href="./reserve_list.php?keyword_type=num&keyword="+num;
+	},
+	review : function(state, num) {
+		$.ajax({
+			type : "POST",
+			data : {"mode":"review", "state":state, "num":num },
+			url  : "state.php",
+			success : function(e) {
+				switch(state) {
+					case "Y":
+						var title = "노출";
+					break;
+					case "N":
+						var title = "비노출";
+					break;
+				}
+				$(".review_title_"+num).html(title);
+			}
+		})
+	},
+	review_list : function() {
+		admin.form_ajax("review_form", "review");
 	}
 }
 $("input[name='password']").keyup(function(e){

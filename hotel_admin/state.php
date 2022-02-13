@@ -426,5 +426,72 @@
 			$qry = "update reserve set state = '".$state."' where num = '".$num."'";
 			$res = mysqli_query($dbconn, $qry);
 		break;
+		case "review":
+			/*$qry = "select * from where review where num = '".$num."'";
+			$res = mysqli_query($dbconn, $qry);*/
+			$qry = "update review set state = '".$state."' where reserve_num = '".$num."'";
+			echo $qry;
+			$res = mysqli_query($dbconn, $qry);
+		break;
+		case "review_list":
+			$_page = empty($_GET["_page"]) ? 1 : $_GET["_page"];
+			$block = $limit = 5;
+
+			$room = $util->room_arr("");
+
+			$review_qry = "select * from review order by wdate desc ";
+			$sreview_res = mysqli_query($dbconn, $review_qry);
+			$review_cnt = @mysqli_num_rows($sreview_res);
+
+			$review_qry .= " limit ".(($_page-1)*$limit).",".$limit."";
+			$review_res = mysqli_query($dbconn, $review_qry);
+			$out = "";
+
+			while($review_row = mysqli_fetch_array($review_res)) {
+				$reserve_qry = "select * from reserve where num = '".$review_row["reserve_num"]."'";
+				$reserve_res = mysqli_query($dbconn, $reserve_qry);
+				$reserve_row = @mysqli_fetch_array($reserve_res);
+				$star = "";
+				for($s=1; $s<=5; $s++) {
+					if($s <= $review_row["star"]) {
+						$star .= "<i class='fa fa-star'></i>";
+					} else {
+						$star .= "<i class='fa fa-star-o'></i>";
+					}
+				}
+				$show_state = ($review_row["state"] == "Y") ? "노출&nbsp;&nbsp;&nbsp;&nbsp;" : "비노출";
+				$out .= "<div class=\"preview-item border-bottom\">";
+					$out .= "<div class=\"preview-thumbnail\">";
+					$out .= "<img src=\"".base_url."/".$room["room"][$reserve_row['room_type']]["img"]."\" alt=\"image\" class=\"rounded-circle\" />";
+					$out .= "</div>";
+					$out .= "<div class=\"preview-item-content d-flex flex-grow\">";
+						$out .= "<div class=\"flex-grow\">";
+							$out .= "<div class=\"d-flex d-md-block d-xl-flex justify-content-between\">";
+							$out .= "<h6 class=\"preview-subject\">";
+							$out .= "<a href=\"javascript:;\">".$reserve_row["reserve_name"].$review_row["star"]."</a> - ".$star."";
+							$out .= "</h6>";
+							$out .= "<p class=\"text-muted text-small\">".$review_row["wdate"]."</p>";
+							$out .= "</div>";
+							$out .= "<div class=\"d-flex d-md-block d-xl-flex justify-content-between\">
+					                  <h6 class=\"preview-subject\">
+					                    <a href=\"javascript:;\">".$room[$reserve_row["room_type"]]["name"]."</a>
+					                  </h6>
+					                </div>";
+					        $out .= "<p class=\"text-muted\">".$review_row["contents"]."</p>";
+					        $out .= "<p class=\"text-muted\">
+					                  <div class=\"dropdown\" style=\"float:right\">
+					                    <button class=\"btn btn-outline-secondary dropdown-toggle review_title_".$review_row['reserve_num']."\" type=\"button\" id=\"dropdownMenuOutlineButton2\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\"> ".$show_state." </button>
+					                    <div class=\"dropdown-menu\" aria-labelledby=\"dropdownMenuOutlineButton2\">
+					                      <a class=\"dropdown-item review_Y_".$review_row['num']."\" href=\"javascript:admin.review('Y', '".$review_row["reserve_num"]."');\">노출</a>
+					                      <a class=\"dropdown-item review_N_".$review_row['num']."\" href=\"javascript:admin.review('N', '".$review_row["reserve_num"]."');\">비노출</a>
+					                    </div>
+					                  </div>
+					                </p>";
+						$out .= "</div>";
+					$out .= "</div>";
+				$out .= "</div>";
+			}
+			echo $out;
+		break;
 	}
 ?>

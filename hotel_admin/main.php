@@ -16,6 +16,7 @@
     <div class="container-scroller">
       <!-- partial:partials/_sidebar.html -->
       <?php
+        $page = "main";
         //좌측 사이드메뉴 분리
         include "./common/left_menu.php";
       ?>
@@ -348,61 +349,26 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-md-6 col-xl-4 grid-margin stretch-card">
+              <div class="col-md-6 col-xl-8 grid-margin stretch-card">
                 <div class="card">
                   <div class="card-body">
                     <div class="d-flex flex-row justify-content-between">
                       <h4 class="card-title">Review</h4>
-                      <p class="text-muted mb-1 small">View all</p>
+                      <p class="text-muted mb-1 small hide">View all</p>
                     </div>
-                    <div class="preview-list">
-                      <?php
-                        //리뷰 리스팅, 별도의 페이지 x
-                        $review_qry = "select * from review order by wdate desc limit 0,8";
-                        $review_res = mysqli_query($dbconn, $review_qry);
-
-                        while($review_row = mysqli_fetch_array($review_res)) {
-                          $reserve_qry = "select * from reserve where num = '".$review_row["reserve_num"]."'";
-                          $reserve_res = mysqli_query($dbconn, $reserve_qry);
-                          $reserve_row = @mysqli_fetch_array($reserve_res);
-                          $star = "";
-                          for($s=1; $s<=5; $s++) {
-                            if($s <= $review_row["star"]) {
-                              $star .= "<i class='fa fa-star'></i>";
-                            } else {
-                              $star .= "<i class='fa fa-star-o'></i>";
-                            }
-                          }
-                      ?>
-                      <div class="preview-item border-bottom">
-                        <div class="preview-thumbnail">
-                          <img src="<?=base_url?>/<?=$room[$reserve_row['room_type']]["img"]?>" alt="image" class="rounded-circle" />
-                        </div>
-                        <div class="preview-item-content d-flex flex-grow">
-                          <div class="flex-grow">
-                            <div class="d-flex d-md-block d-xl-flex justify-content-between">
-                              <h6 class="preview-subject">
-                                <a href="javascript:;"><?=$reserve_row["reserve_name"].$review_row["star"]?></a> - <?=$star?>
-                              </h6>
-                              <p class="text-muted text-small"><?=$review_row["wdate"]?></p>
-                            </div>
-                            <div class="d-flex d-md-block d-xl-flex justify-content-between">
-                              <h6 class="preview-subject">
-                                <a href="javascript:;"><?=$room[$reserve_row["room_type"]]["name"]?></a>
-                              </h6>
-                            </div>
-                            <p class="text-muted"><?=$review_row["contents"]?></p>
-                          </div>
-                        </div>
-                      </div>
-                      <?php
-                        }
-                      ?>
+                    <?php
+                      $_page = empty($_GET["_page"]) ? 1 : $_GET["_page"];
+                    ?>
+                    <form name="review_form">
+                      <input type="hidden" name="_page" value="<?=$_page?>">
+                      <input type="hidden" name="mode" value="review_list">
+                    </form>
+                    <div class="preview-list" id="review">
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="col-md-6 col-xl-4 grid-margin stretch-card">
+              <div class="col-md-6 col-xl-4 grid-margin stretch-card hide">
                 <div class="card">
                   <div class="card-body">
                     <h4 class="card-title">Portfolio Slide</h4>

@@ -14,7 +14,8 @@
         $edate = $_GET["edate"];  //종료일
         $keyword = $_GET["keyword"];  //검색어
         $keyword_type = $_GET["keyword_type"];//검색타입
-        $limit = $block = 10; //리스트노출개수, 페이지블록개수
+        $limit = 10; //리스트노출개수
+        $block = 5; //페이지블록개수
       ?>
       <!-- partial -->
       <div class="container-fluid page-body-wrapper">
@@ -149,17 +150,26 @@
                       <dir>
                       	<center class="paging">
                       		<p>
-                      			<a href="javascript:admin.reserve_page('1');"><<</a>
+                          <?php
+                            $p = ceil($_page/$block);
+                            $start = $_start = (($p-1)*$block)+1;
+                            $end = $start+$block-1;
+                          ?>
+                      			<a href="javascript:admin.reserve_page('1');">◀</a>
+                            <a href="javascript:admin.reserve_page('<?=($_page-1)?>');">◁</a>
                       		<?php
-                      			for($p=1; $p<=$total_page; $p++) {
-                      				if($p == $_page) {
-                      					echo "<b>".$p."</b>";
+                            
+                            //$total_page;
+                      			for($start; $start<=$end; $start++) {
+                      				if($start == $_page) {
+                      					echo "<b>".$start."</b> ";
                       				} else {
-                      					echo "<a href=\"javascript:admin.reserve_page('".$p."');\">".$p."</a>";
+                      					echo "<a href=\"javascript:admin.reserve_page('".$start."');\">".$start."</a> ";
                       				}
                       			}
                       		?>
-                      			<a href="javascript:admin.reserve_page('<?=$total_page?>');">>></a>
+                            <a href="javascript:admin.reserve_page('<?=($_page+1)?>');">▷</a>
+                      			<a href="javascript:admin.reserve_page('<?=$total_page?>');">▶</a>
                       		</p>
                       	</center>
                       </dir>

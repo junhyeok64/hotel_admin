@@ -22,12 +22,18 @@
     <!-- endinject -->
     <script src="<?=base_admin?>/assets/js/dashboard.js"></script>
     <script src="<?=base_admin?>/assets/js/select2.js"></script>
-
-    <script src="<?=base_admin?>/assets/js/chart.js"></script>
+    <?php
+        switch($page) {
+            case "reserve_chart":
+                echo "<script src=\"".base_admin."/assets/js/chart.js\"></script>";
+            break;
+        }
+    ?>
     <script type="text/javascript">
         if(page == "main") {
           $(document).ready(function(){
             admin.todo_paging("");
+            admin.review_list();
           });
         }
     </script>
