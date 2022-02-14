@@ -514,7 +514,6 @@
 				$out .= "<a href=\"javascript:admin.review_page('".$total_page."');\">▶</a>";
 				$out .= "</p></center>";
 
-			$out .= "";
 			echo $out;
 		break;
 	}
