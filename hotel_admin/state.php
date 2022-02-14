@@ -517,7 +517,5 @@
 			$out .= "";
 			echo $out;
 		break;
-		case "":
-		break;
 	}
 ?>
