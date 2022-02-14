@@ -271,6 +271,7 @@
             </div>
           <!-- content-wrapper ends -->
           <!-- partial:../../partials/_footer.html -->
+          <div id="rlist_div"></div>
           <footer class="footer">
             <div class="d-sm-flex justify-content-center justify-content-sm-between">
               <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © bootstrapdash.com 2020</span>
@@ -292,7 +293,7 @@
     <style type="text/css">
       #rlist_div {width:150px;height:50px;border:1px solid black;background-color:#323232;}
     </style>
-    <div id="rlist_div"></div>
+    
 
 
     <script type="text/javascript">
