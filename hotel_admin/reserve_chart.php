@@ -189,7 +189,7 @@
                                $data[$row["date"]][$row["state"]] = $row["price"]; //초기화한 배열에 금액 넣기
                             }                          
                             $r = 0;
-                            
+                            $prev_price = 0;
                             foreach($data as $key => $value) {
                               //결제타입별 금액정리
                               $price = $data[$key]["Y"]+$data[$key]["S"]+$data[$key]["E"];  //예약금액
@@ -219,14 +219,39 @@
                                 break;
                               }
                               $r++;
-                              //print_r($data);exit;
+                              if($price > $prev_price) {
+                                $diff_price = "<span style='color:red'>▲</span";
+                              } else if($price < $prev_price) {
+                                $diff_price = "<span style='color:blue'>▼</span";
+                              } else if($price == $prev_price) {
+                                $diff_price = "<span style='color:black'> -</span";
+                              }
+
+                              if($success > $prev_success) {
+                                $diff_success = "<span style='color:red'>▲</span";
+                              } else if($success < $prev_success) {
+                                $diff_success = "<span style='color:blue'>▼</span";
+                              } else if($success == $prev_success) {
+                                $diff_success = "<span style='color:black'> -</span";
+                              }
+
+                              if($cancel > $prev_cancel) {
+                                $diff_cancel = "<span style='color:red'>▲</span";
+                              } else if($cancel < $prev_cancel) {
+                                $diff_cancel = "<span style='color:blue'>▼</span";
+                              } else if($cancel == $prev_cancel) {
+                                $diff_cancel = "<span style='color:black'> -</span";
+                              }
 
                               echo "<tr>";
                               echo "<td class='center'>".$key."</td>";
-                              echo "<td>".@number_format($price)."</td>";
-                              echo "<td>".@number_format($success)."</td>";
-                              echo "<td>".@number_format($cancel)."</td>";
+                              echo "<td class='price' text='Total : ".@number_format($total_price)."'>".@number_format($price)." ".$diff_price."</td>";
+                              echo "<td class='price' text='Total : ".@number_format($total_success)."'>".@number_format($success)." ".$diff_success."</td>";
+                              echo "<td class='price' text='Total : ".@number_format($total_cancel)."'>".@number_format($cancel)." ".$diff_cancel."</td>";
                               echo "</tr>";
+                              $prev_price = $price;
+                              $prev_success = $success;
+                              $prev_cancel = $cancel;
                             }
                             $script .= "</script>";
                           ?>
@@ -264,6 +289,27 @@
       include "./common/bottom.php";
       echo $script;
     ?>
+    <style type="text/css">
+      #rlist_div {width:150px;height:50px;border:1px solid black;background-color:#323232;}
+    </style>
+    <div id="rlist_div"></div>
+
+
     <script type="text/javascript">
-      
+      $(".price").mouseenter(function(e){
+        var divtop = e.pageY;
+        var divleft = e.pageX+50;
+        //var num = $(this).attr("num");
+        var text = $(this).attr("text");
+        $("#rlist_div").empty().append("<div style='position:absolute;top:5px;right:5px'>"+text+"</div>");
+        $("#rlist_div").css({
+          "top" : divtop,
+          "left" : divleft,
+          "position":"absolute"
+        }).show();
+
+      })
+      $(".price").mouseleave(function(e){
+        $("#rlist_div").hide();
+      })
     </script>
