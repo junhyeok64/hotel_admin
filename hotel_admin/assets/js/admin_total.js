@@ -174,6 +174,10 @@ var admin = {
 	},
 	review_list : function() {
 		admin.form_ajax("review_form", "review");
+	},
+	review_page : function(val) {
+		$("input[name='_page']").val(val);
+		admin.review_list();
 	}
 }
 $("input[name='password']").keyup(function(e){

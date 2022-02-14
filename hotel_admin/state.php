@@ -434,8 +434,9 @@
 			$res = mysqli_query($dbconn, $qry);
 		break;
 		case "review_list":
-			$_page = empty($_GET["_page"]) ? 1 : $_GET["_page"];
-			$block = $limit = 5;
+			$_page = empty($_page) ? 1 : $_page;
+			$block = 5;
+			$limit = 10;
 
 			$room = $util->room_arr("");
 
@@ -446,6 +447,7 @@
 			$review_qry .= " limit ".(($_page-1)*$limit).",".$limit."";
 			$review_res = mysqli_query($dbconn, $review_qry);
 			$out = "";
+			$total_page = ceil($review_cnt / $limit);
 
 			while($review_row = mysqli_fetch_array($review_res)) {
 				$reserve_qry = "select * from reserve where num = '".$review_row["reserve_num"]."'";
@@ -491,6 +493,28 @@
 					$out .= "</div>";
 				$out .= "</div>";
 			}
+				$out .= "<center class=\"paging\"><p>";
+				$p = ceil($_page/$block);
+				$start = $_start = (($p-1)*$block)+1;
+                $end = $start+$block-1;
+                $end = ($total_page <= $end) ? $total_page : $end;
+
+				$out .= "<a href=\"javascript:admin.review_page('1');\">◀</a>";
+				$prev_page = ($_page == 1) ? $_page : ($_page-1);
+				$next_page = ($_page >= $total_page) ? $total_page : $_page+1;
+				$out .= "<a href=\"javascript:admin.review_page('".$prev_page."')\">◁</a>";
+				for($start; $start<=$end; $start++) {
+					if($start == $_page) {
+						$out .= "<b>".$start."</b>";
+					} else {
+						$out .= "<a href=\"javascript:admin.review_page('".$start."');\">".$start."</a>";
+					}
+				}
+				$out .= "<a href=\"javascript:admin.review_page('".$next_page."')\">▷</a>";
+				$out .= "<a href=\"javascript:admin.review_page('".$total_page."');\">▶</a>";
+				$out .= "</p></center>";
+
+			$out .= "";
 			echo $out;
 		break;
 	}

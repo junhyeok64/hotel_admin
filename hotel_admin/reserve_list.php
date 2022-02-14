@@ -109,7 +109,7 @@
                         		$i=1;
                         		if($cnt > 0) {
                         			$num = $cnt - (($_page-1)*$limit);
-                        			$total_page = ceil($cnt / $block);
+                        			$total_page = ceil($cnt / $limit);
                         			while($row = mysqli_fetch_array($res)) {
                         				$data[$i]["state"] = $row["state"];
                         				//'Y','S','C','T','E'
@@ -154,9 +154,13 @@
                             $p = ceil($_page/$block);
                             $start = $_start = (($p-1)*$block)+1;
                             $end = $start+$block-1;
+                            $end = ($total_page <= $end ) ? $total_page : $end;
+
+                            $prev_page = ($_page <= 1) ? 1 : $_page-1;
+                            $next_page = ($_page >= $total_page) ? $total_page : $_page+1;
                           ?>
                       			<a href="javascript:admin.reserve_page('1');">◀</a>
-                            <a href="javascript:admin.reserve_page('<?=($_page-1)?>');">◁</a>
+                            <a href="javascript:admin.reserve_page('<?=($prev_page)?>');">◁</a>
                       		<?php
                             
                             //$total_page;
@@ -168,7 +172,7 @@
                       				}
                       			}
                       		?>
-                            <a href="javascript:admin.reserve_page('<?=($_page+1)?>');">▷</a>
+                            <a href="javascript:admin.reserve_page('<?=($next_page)?>');">▷</a>
                       			<a href="javascript:admin.reserve_page('<?=$total_page?>');">▶</a>
                       		</p>
                       	</center>
